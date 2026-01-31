@@ -1,0 +1,54 @@
+.canvas {
+    display: block;
+    background: linear-gradient(to bottom, #020617, #0f172a, #1e1b4b);
+    background-size: 100% 200%;
+    animation: skyScroll 12s linear infinite;
+}
+
+@keyframes skyScroll {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 0% 100%;
+    }
+}
+
+.shake {
+    animation: shake 0.2s ease-in-out infinite;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    25% {
+        transform: translate(-2px, 2px);
+    }
+
+    50% {
+        transform: translate(2px, -2px);
+    }
+
+    75% {
+        transform: translate(-2px, -2px);
+    }
+}
+
+.levelUpFlash {
+    animation: flash 0.5s ease-out;
+}
+
+@keyframes flash {
+    0% {
+        filter: brightness(3);
+    }
+
+    100% {
+        filter: brightness(1);
+    }
+}

@@ -1,0 +1,216 @@
+.container {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    right: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: none;
+}
+
+.leftPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.scoreDisplay {
+    font-size: 2.25rem;
+    font-weight: 900;
+    color: white;
+    filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.15));
+}
+
+.scoreValue {
+    color: #facc15;
+}
+
+.energyContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.energyLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #cbd5e1;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.energyBarOuter {
+    width: 16rem;
+    height: 1.25rem;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.25rem;
+}
+
+.energyBarInner {
+    height: 100%;
+    border-radius: 9999px;
+    transition: all 0.3s;
+}
+
+.rightPanel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.weaponLabel {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #f87171;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.weaponBarOuter {
+    display: flex;
+    gap: 0.25rem;
+    height: 1rem;
+    width: 12rem;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.25rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.weaponBarInner {
+    height: 100%;
+    background: linear-gradient(to right, #3b82f6, #ef4444);
+    border-radius: 9999px;
+    transition: all 0.3s;
+}
+
+.weaponMax {
+    background: linear-gradient(to right, #ef4444, #dc2626);
+}
+
+.weaponLevel {
+    font-size: 1.25rem;
+    font-weight: 900;
+    margin-top: 0.5rem;
+    color: #60a5fa;
+}
+
+.weaponLevelMax {
+    color: #ef4444;
+    transform: scale(1.25);
+}
+
+.shieldActive {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #4ade80;
+    margin-top: 0.25rem;
+    text-transform: uppercase;
+}
+
+.shieldNormal {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-top: 0.25rem;
+    text-transform: uppercase;
+}
+
+.shieldCritical {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #ef4444;
+    margin-top: 0.25rem;
+    text-transform: uppercase;
+    animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.timeDisplay {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.timeLabel {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+.timeValue {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #f8fafc;
+}
+
+.difficultyBadge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.2);
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.bossInfo {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #f87171;
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 480px) {
+    .container {
+        top: 1rem;
+        left: 1rem;
+        right: 1rem;
+    }
+
+    .scoreDisplay {
+        font-size: 1.25rem;
+    }
+
+    .energyBarOuter {
+        width: 8rem;
+        height: 1rem;
+    }
+
+    .weaponBarOuter {
+        width: 6rem;
+        height: 0.75rem;
+    }
+
+    .weaponLevel {
+        font-size: 1rem;
+    }
+
+    .energyLabel,
+    .weaponLabel {
+        font-size: 0.625rem;
+    }
+}

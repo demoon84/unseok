@@ -1,0 +1,257 @@
+.container {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 100;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.panel {
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+    border: 2px solid #334155;
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #ef4444;
+    margin: 0 0 20px 0;
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+    animation: pulse 1.5s ease infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.score {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.scoreLabel {
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+.scoreValue {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #fbbf24;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.form {
+    margin-bottom: 20px;
+}
+
+.congrats {
+    color: #22c55e;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1.1rem;
+    border: 2px solid #475569;
+    border-radius: 10px;
+    background: #1e293b;
+    color: #f1f5f9;
+    text-align: center;
+    margin-bottom: 10px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input:focus {
+    border-color: #22c55e;
+}
+
+.submitButton {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #0f172a;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+    transform: scale(1.02);
+}
+
+.submitButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.submitted {
+    color: #22c55e;
+    margin-bottom: 20px;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    font-size: 0.9rem;
+    color: #94a3b8;
+    background: transparent;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.activeTab {
+    color: #f1f5f9;
+    background: #334155;
+    border-color: #22c55e;
+}
+
+.rankingList {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+    min-height: 180px;
+}
+
+.empty {
+    color: #64748b;
+    padding: 60px 0;
+}
+
+.rankItem {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.rankItem:last-child {
+    margin-bottom: 0;
+}
+
+.gold {
+    background: linear-gradient(90deg, rgba(251, 191, 36, 0.2), transparent);
+    border-left: 3px solid #fbbf24;
+}
+
+.silver {
+    background: linear-gradient(90deg, rgba(148, 163, 184, 0.2), transparent);
+    border-left: 3px solid #94a3b8;
+}
+
+.bronze {
+    background: linear-gradient(90deg, rgba(217, 119, 6, 0.2), transparent);
+    border-left: 3px solid #d97706;
+}
+
+.rank {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fbbf24;
+    width: 30px;
+}
+
+.gold .rank {
+    color: #fbbf24;
+}
+
+.silver .rank {
+    color: #94a3b8;
+}
+
+.bronze .rank {
+    color: #d97706;
+}
+
+.name {
+    flex: 1;
+    text-align: left;
+    color: #f1f5f9;
+    font-weight: 500;
+}
+
+.rankScore {
+    color: #22c55e;
+    font-weight: bold;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.restartButton,
+.menuButton {
+    flex: 1;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.restartButton {
+    color: #0f172a;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.menuButton {
+    color: #f1f5f9;
+    background: #475569;
+}
+
+.restartButton:hover,
+.menuButton:hover {
+    transform: scale(1.02);
+}

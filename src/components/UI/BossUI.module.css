@@ -1,0 +1,66 @@
+.alertContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.alertText {
+    font-size: 3.75rem;
+    font-weight: 900;
+    color: #ef4444;
+    font-style: italic;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.hudContainer {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 66.666667%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.bossLabel {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #ef4444;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.hpBarOuter {
+    width: 100%;
+    height: 1.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.hpBar {
+    height: 100%;
+    background: linear-gradient(to right, #dc2626, #f87171);
+    transition: all 0.1s;
+}
+
+@media (max-width: 480px) {
+    .alertText {
+        font-size: 1.5rem;
+    }
+
+    .hudContainer {
+        width: 80%;
+        height: 1rem;
+        bottom: 1.5rem;
+    }
+}

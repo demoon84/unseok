@@ -1,0 +1,170 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    pointer-events: auto;
+    overflow: hidden;
+}
+
+/* 로고 섹션 */
+.logoSection {
+    position: absolute;
+    top: 33%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #22d3ee;
+    margin: 0;
+    text-shadow:
+        0 0 10px rgba(34, 211, 238, 0.8),
+        0 0 30px rgba(34, 211, 238, 0.5),
+        0 0 50px rgba(34, 211, 238, 0.3),
+        0 4px 0 #0e7490;
+    letter-spacing: 0.1em;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin: 10px 0 0 0;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+}
+
+.logo {
+    width: 320px;
+    height: auto;
+    filter: drop-shadow(0 0 25px rgba(34, 211, 238, 0.5));
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at center, black 40%, transparent 75%);
+    mask-image: radial-gradient(ellipse 70% 70% at center, black 40%, transparent 75%);
+}
+
+@keyframes logoFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+/* 비행기 출격 애니메이션 */
+.shipLaunch {
+    position: absolute;
+    bottom: -100px;
+    /* 화면 밖 아래에서 시작 */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 15;
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shipLaunch.launching {
+    bottom: 50%;
+    /* 화면 중앙으로 이동 */
+}
+
+.shipImage {
+    width: 80px;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+}
+
+/* 격납고 섹션 (하단) */
+.hangarSection {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hangarSection.hangarHide {
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+.hangar {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    opacity: 0.9;
+    margin-bottom: -90px;
+}
+
+.buttonContainer {
+    position: absolute;
+    bottom: calc(30% + 20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    z-index: 20;
+}
+
+.startButton {
+    padding: 1rem 3rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: #60a5fa;
+    border: 2px solid #60a5fa;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    backdrop-filter: blur(4px);
+}
+
+.startButton:hover {
+    background: rgba(96, 165, 250, 0.2);
+    color: #93c5fd;
+    border-color: #93c5fd;
+    transform: scale(1.05);
+}
+
+.startButton:active {
+    transform: scale(0.95);
+}
+
+.startButton.hidden {
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+}
+
+@media (max-width: 480px) {
+    .logo {
+        width: 200px;
+    }
+
+    .shipImage {
+        width: 60px;
+    }
+
+    .hangar {
+        max-width: 100%;
+    }
+
+    .startButton {
+        padding: 0.875rem 2.5rem;
+        font-size: 1rem;
+    }
+}

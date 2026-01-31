@@ -1,0 +1,108 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background-color: #0c1445;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* Canvas Styles */
+.game-canvas {
+  display: block;
+  background: linear-gradient(to bottom, #020617, #0f172a, #1e1b4b);
+  background-size: 100% 200%;
+  animation: skyScroll 12s linear infinite;
+}
+
+@keyframes skyScroll {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 0% 100%; }
+}
+
+/* Animations */
+@keyframes red-flash {
+  0% { background-color: rgba(255, 0, 0, 0); }
+  50% { background-color: rgba(255, 0, 0, 0.5); }
+  100% { background-color: rgba(255, 0, 0, 0); }
+}
+
+@keyframes warning-flash {
+  0% { background-color: rgba(255, 0, 0, 0); }
+  50% { background-color: rgba(255, 0, 0, 0.2); }
+  100% { background-color: rgba(255, 0, 0, 0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, -2px); }
+  75% { transform: translate(-2px, -2px); }
+}
+
+@keyframes flash {
+  0% { filter: brightness(3); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes pulse {
+  50% { opacity: 0.5; }
+}
+
+.damage-flash {
+  animation: red-flash 0.3s ease-out;
+}
+
+.boss-warning {
+  animation: warning-flash 0.5s ease-in-out infinite;
+}
+
+.shake {
+  animation: shake 0.2s ease-in-out infinite;
+}
+
+.level-up-flash {
+  animation: flash 0.5s ease-out;
+}
+
+/* UI Layer */
+.ui-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: white;
+  z-index: 10;
+}
+
+.interactive {
+  pointer-events: auto;
+}
+
+/* Flash Overlay */
+.flash-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+}
