@@ -1,135 +1,77 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { GameCanvas } from './components/Game/GameCanvas';
-import { StartScreen } from './components/UI/StartScreen';
-import { GameOver } from './components/UI/GameOver';
-import { VictoryScreen } from './components/UI/VictoryScreen';
-import { HUD } from './components/UI/HUD';
-import { BossAlert, BossHUD } from './components/UI/BossUI';
+import { StartScreen } from './components/UI/StartScreen/StartScreen';
+import { GameOver } from './components/UI/GameOver/GameOver';
+import { VictoryScreen } from './components/UI/VictoryScreen/VictoryScreen';
+import { HUD } from './components/UI/HUD/HUD';
+import { BossAlert } from './components/UI/BossUI/BossUI';
 import { GAME_CONFIG } from './constants/gameConfig';
+import { useGameState } from './hooks/useGameState';
+import { useBoss } from './hooks/useBoss';
+import { useEffects } from './hooks/useEffects';
 import './App.css';
 
 function App() {
-    // Game state: 'menu' | 'playing' | 'gameover' | 'victory'
-    const [gameState, setGameState] = useState('menu');
+    // 게임 상태 관리 훅
+    const {
+        gameState,
+        score,
+        energy,
+        powerLevel,
+        shield,
+        bombs,
+        elapsedTime,
+        bossCount,
+        setScore,
+        setEnergy,
+        setPowerLevel,
+        setShield,
+        setBombs,
+        setBossCount,
+        setGameState,
+        handleStart: gameStart,
+        handleGameOver,
+        handleVictory,
+    } = useGameState();
 
-    // Game data
-    const [score, setScore] = useState(0);
-    const [energy, setEnergy] = useState(GAME_CONFIG.PLAYER.MAX_ENERGY);
-    const [powerLevel, setPowerLevel] = useState(1);
-    const [shield, setShield] = useState(0); // 보호막 스택
-    const [elapsedTime, setElapsedTime] = useState(0); // 경과 시간 (초)
-    const [bossCount, setBossCount] = useState(0); // 처치한 보스 수
+    // 보스 시스템 훅
+    const {
+        showBossAlert,
+        showBossHUD,
+        showBossWarning,
+        handleBossSpawn,
+        handleBossDefeat: bossDefeat,
+        handleBossDamage,
+        resetBossState,
+    } = useBoss(handleVictory);
 
-    // Boss state
-    const [showBossAlert, setShowBossAlert] = useState(false);
-    const [showBossHUD, setShowBossHUD] = useState(false);
-    const [bossHp, setBossHp] = useState(0);
-    const [bossMaxHp, setBossMaxHp] = useState(0);
+    // 이펙트 훅
+    const {
+        showDamageFlash,
+        showBombFlash,
+        triggerDamageFlash,
+        triggerBombFlash,
+    } = useEffects();
 
-    // Effects state
-    const [showDamageFlash, setShowDamageFlash] = useState(false);
-    const [showBossWarning, setShowBossWarning] = useState(false);
+    // Bomb ref
+    const useBombRef = useRef(null);
 
-    // Timer ref
-    const timerRef = useRef(null);
+    // 게임 시작 (보스 상태도 리셋)
+    const handleStart = () => {
+        gameStart();
+        resetBossState();
+    };
 
-    // 경과 시간 타이머
-    useEffect(() => {
-        if (gameState === 'playing') {
-            setElapsedTime(0);
-            timerRef.current = setInterval(() => {
-                setElapsedTime(prev => prev + 1);
-            }, 1000);
-        } else {
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-                timerRef.current = null;
-            }
-        }
-
-        return () => {
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-            }
-        };
-    }, [gameState]);
-
-    // Start game
-    const handleStart = useCallback(() => {
-        setGameState('playing');
-        setScore(0);
-        setEnergy(GAME_CONFIG.PLAYER.MAX_ENERGY);
-        setPowerLevel(1);
-        setShield(0);
-        setElapsedTime(0);
-        setBossCount(0);
-        setShowBossHUD(false);
-        setShowBossAlert(false);
-        setBossHp(0);
-        setBossMaxHp(0);
-    }, []);
-
-    // Game over
-    const handleGameOver = useCallback(() => {
-        setGameState('gameover');
-        setShowBossHUD(false);
-        setShowBossAlert(false);
-    }, []);
-
-    // Victory (3rd boss defeated)
-    const handleVictory = useCallback(() => {
-        setGameState('victory');
-        setShowBossHUD(false);
-        setShowBossAlert(false);
-    }, []);
-
-    // Boss spawn
-    const handleBossSpawn = useCallback((bossNumber) => {
-        setShowBossAlert(true);
-        setShowBossWarning(true);
-
-        setTimeout(() => {
-            setShowBossAlert(false);
-            setShowBossWarning(false);
-            setShowBossHUD(true);
-        }, GAME_CONFIG.BOSS.WARNING_DURATION_MS);
-    }, []);
-
-    // Boss defeat
-    const handleBossDefeat = useCallback(() => {
-        setShowBossHUD(false);
-        setBossCount(prev => {
-            const newCount = prev + 1;
-            // 3번째 보스 처치 시 승리
-            if (newCount >= GAME_CONFIG.BOSS.TOTAL_BOSSES) {
-                setTimeout(() => handleVictory(), 1000);
-            }
-            return newCount;
-        });
-    }, [handleVictory]);
-
-    // Boss damage
-    const handleBossDamage = useCallback((hp, maxHp) => {
-        setBossHp(hp);
-        setBossMaxHp(maxHp);
-    }, []);
-
-    // Player damage
-    const handleDamage = useCallback(() => {
-        setShowDamageFlash(true);
-        setTimeout(() => setShowDamageFlash(false), 300);
-    }, []);
-
-    // Level up
-    const handleLevelUp = useCallback(() => {
-        // Could add visual effects here
-    }, []);
+    // 보스 처치 핸들러
+    const handleBossDefeat = () => {
+        bossDefeat(setBossCount);
+    };
 
     return (
         <div className="app">
-            {/* Flash overlay for damage effects */}
+            {/* Flash overlay */}
             <div
-                className={`flash-overlay ${showDamageFlash ? 'damage-flash' : ''} ${showBossWarning ? 'boss-warning' : ''}`}
+                className={`flash-overlay ${showDamageFlash ? 'damage-flash' : ''} ${showBossWarning ? 'boss-warning' : ''} ${showBombFlash ? 'bomb-flash' : ''}`}
             />
 
             {/* Game canvas */}
@@ -139,24 +81,25 @@ function App() {
                 onEnergyUpdate={setEnergy}
                 onPowerLevelUpdate={setPowerLevel}
                 onShieldUpdate={setShield}
+                onBombUpdate={setBombs}
+                useBombRef={useBombRef}
                 onGameOver={handleGameOver}
                 onBossSpawn={handleBossSpawn}
                 onBossDefeat={handleBossDefeat}
                 onBossDamage={handleBossDamage}
-                onDamage={handleDamage}
-                onLevelUp={handleLevelUp}
+                onDamage={triggerDamageFlash}
+                onBombUsed={triggerBombFlash}
+                onLevelUp={() => { }}
                 elapsedTime={elapsedTime}
                 bossCount={bossCount}
             />
 
             {/* UI Layer */}
             <div className="ui-layer">
-                {/* Start Screen */}
                 {gameState === 'menu' && (
                     <StartScreen onStart={handleStart} />
                 )}
 
-                {/* Game Over Screen */}
                 {gameState === 'gameover' && (
                     <GameOver
                         score={score}
@@ -165,7 +108,6 @@ function App() {
                     />
                 )}
 
-                {/* Victory Screen */}
                 {gameState === 'victory' && (
                     <VictoryScreen
                         score={score}
@@ -174,13 +116,10 @@ function App() {
                     />
                 )}
 
-                {/* Boss Alert */}
-                {showBossAlert && (
-                    <BossAlert />
-                )}
+                {showBossAlert && <BossAlert />}
             </div>
 
-            {/* HUD (visible during gameplay) */}
+            {/* HUD */}
             {gameState === 'playing' && !showBossAlert && (
                 <HUD
                     score={score}
@@ -188,6 +127,8 @@ function App() {
                     maxEnergy={GAME_CONFIG.PLAYER.MAX_ENERGY}
                     powerLevel={powerLevel}
                     shield={shield}
+                    bombs={bombs}
+                    onUseBomb={() => useBombRef.current?.()}
                     elapsedTime={elapsedTime}
                     bossCount={bossCount}
                     totalBosses={GAME_CONFIG.BOSS.TOTAL_BOSSES}
@@ -198,5 +139,3 @@ function App() {
 }
 
 export default App;
-
-

@@ -214,3 +214,65 @@
         font-size: 0.625rem;
     }
 }
+
+/* 폭탄 버튼 */
+.bombButton {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    border: 3px solid #fbbf24;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.5);
+    transition: transform 0.15s, box-shadow 0.15s;
+    z-index: 100;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.bombButton:active:not(:disabled) {
+    transform: scale(0.9);
+}
+
+.bombButton:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.7);
+}
+
+.bombButton:disabled,
+.bombEmpty {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    border-color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+.bombCount {
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+@media (max-width: 480px) {
+    .bombButton {
+        bottom: 1rem;
+        left: 1rem;
+        width: 56px;
+        height: 56px;
+        font-size: 1.25rem;
+    }
+
+    .bombCount {
+        font-size: 0.75rem;
+    }
+}

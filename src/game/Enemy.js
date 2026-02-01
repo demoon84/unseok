@@ -26,18 +26,26 @@ export class Enemy {
         // 단계별 크기 배율: 1단계=2배, 2단계=4배, 3단계=5배
         const sizeMultiplier = bossNumber === 1 ? 2 : (bossNumber === 2 ? 4 : 5);
         const baseWidth = GAME_CONFIG.ENEMY.BOSS_WIDTH;
-        this.width = baseWidth * sizeMultiplier;
+        const calculatedWidth = baseWidth * sizeMultiplier;
+        // 화면 너비의 60%를 최대 크기로 제한
+        const maxWidth = canvasWidth * 0.6;
+        this.width = Math.min(calculatedWidth, maxWidth);
         this.height = this.width;
         this.x = canvasWidth / 2;
         this.y = -this.height;
-        this.speed = 1.3 - (bossNumber * 0.2); // 단계가 높을수록 느림
-        this.vx = 0;
-        // 보스 HP도 단계별로 증가
-        const timeBonus = elapsedMinutes * 50;
-        const hpMultiplier = bossNumber === 1 ? 1 : (bossNumber === 2 ? 2 : 3);
-        this.maxHp = (GAME_CONFIG.ENEMY.BOSS_HP_BASE + (score / 80) + timeBonus) * hpMultiplier;
+        this.speed = 2.5 + (bossNumber * 0.3); // 속도 증가
+        // 튕기는 방향 초기화 (대각선으로 시작)
+        const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5; // 약 45도 각도
+        this.vx = this.speed * (Math.random() > 0.5 ? 1 : -1);
+        this.vy = this.speed;
+        // 보스 HP: 단계별로 대폭 증가 (2단계=3배, 3단계=5배)
+        const hpMultiplier = bossNumber === 1 ? 1 : (bossNumber === 2 ? 3 : 5);
+        const scoreDifficulty = score / 5000;
+        const baseHp = Math.floor(this.width * 5); // 기본 HP 증가
+        const timeBonus = elapsedMinutes * 30;
+        this.maxHp = (baseHp + Math.floor(scoreDifficulty * 5) + timeBonus) * hpMultiplier;
         this.hp = this.maxHp;
-        this.damage = 50 * bossNumber; // 보스 충돌 데미지도 증가
+        this.damage = 50 * bossNumber; // 보스 충돌 데미지
         this.color = '#1e293b';
         this.moveDir = 1;
         this.rotation = 0;
@@ -53,8 +61,9 @@ export class Enemy {
         const sizeSpeedFactor = 50 / this.width;
         this.speed = baseSpeed * sizeSpeedFactor + Math.random() * 0.5;
         this.vx = (Math.random() - 0.5) * 8;
-        this.maxHp = 1;
-        this.hp = 1;
+        // HP: 크기에 비례 (크기/10, 최소 1)
+        this.maxHp = Math.max(1, Math.ceil(this.width / 10));
+        this.hp = this.maxHp;
         this.damage = Math.floor(this.width / 4); // 데미지: 크기에 정비례
         this.color = '#475569';
         this.rotation = Math.random() * Math.PI * 2;
@@ -80,9 +89,9 @@ export class Enemy {
         this.damage = Math.floor(this.width / 4);
 
         // HP calculation with time-based bonus (1분당 HP 보너스 추가)
-        // 거대 운석: 기본 HP 대폭 증가
-        const baseHp = isBig ? Math.floor(this.width * 3) : Math.ceil(this.width / 10);
-        const timeBonus = elapsedMinutes * (isBig ? 20 : 8); // 큰 운석: 분당 20 HP, 작은 운석: 분당 8 HP
+        // 모든 운석: 동일한 HP 공식 (크기/10 + 시간 보너스)
+        const baseHp = Math.ceil(this.width / 10);
+        const timeBonus = elapsedMinutes * 8;
         this.maxHp = baseHp + Math.floor(scoreDifficulty * 3) + timeBonus;
         this.hp = this.maxHp;
         this.color = isBig ? '#1e293b' : '#334155';
@@ -118,12 +127,34 @@ export class Enemy {
         }
     }
 
-    update(canvasWidth) {
+    update(canvasWidth, canvasHeight = 800) {
         if (this.isBoss) {
-            if (this.y < 180) this.y += this.speed;
-            this.x += this.moveDir * 2;
-            if (this.x > canvasWidth - 150 || this.x < 150) this.moveDir *= -1;
-            this.rotation += 0.005;
+            // 화면 전체를 튕기며 움직임
+            this.x += this.vx;
+            this.y += this.vy;
+
+            // 좌우 벽 충돌 - 크기의 30%까지 화면 밖으로 나갈 수 있음
+            const overflowMargin = this.width * 0.3;
+            if (this.x > canvasWidth + overflowMargin) {
+                this.x = canvasWidth + overflowMargin;
+                this.vx *= -1;
+            } else if (this.x < -overflowMargin) {
+                this.x = -overflowMargin;
+                this.vx *= -1;
+            }
+
+            // 상하 벽 충돌 - 가장자리 기준 (하단 25%는 비행기 영역 확보)
+            const margin = this.width / 2 + 20;
+            const bottomSafeZone = canvasHeight * 0.25; // 하단 25% 안전 영역
+            if (this.y > canvasHeight - bottomSafeZone - margin) {
+                this.y = canvasHeight - bottomSafeZone - margin;
+                this.vy *= -1;
+            } else if (this.y < margin + 50) { // 상단 여백 50
+                this.y = margin + 50;
+                this.vy *= -1;
+            }
+
+            this.rotation += 0.008;
         } else {
             this.y += this.speed;
             this.x += this.vx;

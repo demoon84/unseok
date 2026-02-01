@@ -7,6 +7,7 @@
     background: rgba(0, 0, 0, 0.85);
     z-index: 100;
     animation: fadeIn 0.5s ease;
+    pointer-events: auto;
 }
 
 @keyframes fadeIn {
@@ -20,7 +21,7 @@
 }
 
 .panel {
-    background: linear-gradient(145deg, #1e293b, #0f172a);
+    background: rgba(15, 23, 42, 0.95);
     border: 2px solid #334155;
     border-radius: 20px;
     padding: 30px;
@@ -28,10 +29,11 @@
     max-width: 400px;
     text-align: center;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
 }
 
 .title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     color: #ef4444;
     margin: 0 0 20px 0;
     text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
@@ -46,7 +48,7 @@
     }
 
     50% {
-        transform: scale(1.05);
+        transform: scale(1.03);
     }
 }
 
@@ -74,27 +76,51 @@
 }
 
 .congrats {
-    color: #22c55e;
+    color: #22d3ee;
     font-size: 1.1rem;
     margin-bottom: 10px;
 }
 
+.inputRow {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
 .input {
-    width: 100%;
+    flex: 1;
     padding: 12px 15px;
     font-size: 1.1rem;
     border: 2px solid #475569;
     border-radius: 10px;
-    background: #1e293b;
+    background: rgba(30, 41, 59, 0.8);
     color: #f1f5f9;
     text-align: center;
-    margin-bottom: 10px;
     outline: none;
     transition: border-color 0.2s;
 }
 
 .input:focus {
-    border-color: #22c55e;
+    border-color: #60a5fa;
+}
+
+.randomButton {
+    padding: 12px 16px;
+    font-size: 1.3rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid #60a5fa;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.randomButton:hover {
+    transform: scale(1.05);
+    background: rgba(96, 165, 250, 0.2);
+}
+
+.randomButton:active {
+    transform: scale(0.95);
 }
 
 .submitButton {
@@ -102,15 +128,19 @@
     padding: 12px;
     font-size: 1rem;
     font-weight: bold;
-    color: #0f172a;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    border: none;
+    color: #60a5fa;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #60a5fa;
     border-radius: 10px;
     cursor: pointer;
-    transition: transform 0.2s, opacity 0.2s;
+    transition: all 0.2s;
+    backdrop-filter: blur(4px);
 }
 
 .submitButton:hover:not(:disabled) {
+    background: rgba(96, 165, 250, 0.2);
+    color: #93c5fd;
+    border-color: #93c5fd;
     transform: scale(1.02);
 }
 
@@ -120,7 +150,7 @@
 }
 
 .submitted {
-    color: #22c55e;
+    color: #22d3ee;
     margin-bottom: 20px;
 }
 
@@ -149,7 +179,7 @@
 .activeTab {
     color: #f1f5f9;
     background: #334155;
-    border-color: #22c55e;
+    border-color: #60a5fa;
 }
 
 .rankingList {
@@ -220,13 +250,14 @@
 }
 
 .rankScore {
-    color: #22c55e;
+    color: #60a5fa;
     font-weight: bold;
 }
 
 .buttons {
     display: flex;
     gap: 10px;
+    justify-content: center;
 }
 
 .restartButton,
@@ -235,23 +266,33 @@
     padding: 12px;
     font-size: 1rem;
     font-weight: bold;
-    border: none;
-    border-radius: 10px;
+    border-radius: 9999px;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all 0.2s;
+    backdrop-filter: blur(4px);
 }
 
 .restartButton {
-    color: #0f172a;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #60a5fa;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #60a5fa;
+}
+
+.restartButton:hover {
+    background: rgba(96, 165, 250, 0.2);
+    color: #93c5fd;
+    border-color: #93c5fd;
+    transform: scale(1.05);
 }
 
 .menuButton {
-    color: #f1f5f9;
-    background: #475569;
+    color: #94a3b8;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid #475569;
 }
 
-.restartButton:hover,
 .menuButton:hover {
-    transform: scale(1.02);
+    background: rgba(71, 85, 105, 0.3);
+    color: #f1f5f9;
+    transform: scale(1.05);
 }

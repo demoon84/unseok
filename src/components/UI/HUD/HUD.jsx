@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './HUD.module.css';
 
-export function HUD({ score, energy, maxEnergy, powerLevel, shield = 0, elapsedTime = 0, bossCount = 0, totalBosses = 3 }) {
+export function HUD({ score, energy, maxEnergy, powerLevel, shield = 0, bombs = 0, onUseBomb, elapsedTime = 0, bossCount = 0, totalBosses = 3 }) {
     const energyPercent = Math.max(0, energy / maxEnergy) * 100;
     const weaponPercent = (powerLevel / 10) * 100;
 
@@ -38,6 +38,12 @@ export function HUD({ score, energy, maxEnergy, powerLevel, shield = 0, elapsedT
         return { text: 'STATUS: CRITICAL', className: styles.shieldCritical };
     };
 
+    const handleBombClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onUseBomb?.();
+    };
+
     const shieldInfo = getShieldInfo();
     const isMaxLevel = powerLevel === 10;
 
@@ -65,6 +71,16 @@ export function HUD({ score, energy, maxEnergy, powerLevel, shield = 0, elapsedT
                     <span className={styles.timeValue}>{formatTime(elapsedTime)}</span>
                 </div>
             </div>
+
+            {/* 폭탄 버튼 (왼쪽 하단) */}
+            <button
+                className={`${styles.bombButton} ${bombs === 0 ? styles.bombEmpty : ''}`}
+                onClick={handleBombClick}
+                onTouchEnd={handleBombClick}
+                disabled={bombs === 0}
+            >
+                💣 <span className={styles.bombCount}>×{bombs}</span>
+            </button>
 
             <div className={styles.rightPanel}>
                 <div className={styles.weaponLabel}>Weapon System</div>

@@ -64,3 +64,22 @@
         background-color: rgba(255, 0, 0, 0);
     }
 }
+
+/* Bomb Flash Effect - damage-flash와 동일한 패턴 */
+.bomb-flash {
+    animation: bomb-flash 0.3s ease-out;
+}
+
+@keyframes bomb-flash {
+    0% {
+        background-color: rgba(255, 150, 0, 0);
+    }
+
+    50% {
+        background-color: rgba(255, 150, 0, 0.5);
+    }
+
+    100% {
+        background-color: rgba(255, 150, 0, 0);
+    }
+}

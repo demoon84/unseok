@@ -26,6 +26,8 @@ export class Item {
             this.drawPowerItem(ctx);
         } else if (this.type === 'SHIELD') {
             this.drawShieldItem(ctx);
+        } else if (this.type === 'BOMB') {
+            this.drawBombItem(ctx);
         } else {
             this.drawHealthItem(ctx);
         }
@@ -99,6 +101,39 @@ export class Item {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('S', 0, 0);
+    }
+
+    drawBombItem(ctx) {
+        ctx.fillStyle = '#f97316'; // 주황색
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = '#f97316';
+
+        // Draw bomb shape (circle)
+        ctx.beginPath();
+        ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw fuse
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, -this.size / 2);
+        ctx.lineTo(0, -this.size / 2 - 6);
+        ctx.lineTo(4, -this.size / 2 - 10);
+        ctx.stroke();
+
+        // Add spark effect
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(4, -this.size / 2 - 10, 3 + Math.sin(this.pulse * 2) * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw "B" label
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('B', 0, 0);
     }
 
     isOffScreen(canvasHeight) {

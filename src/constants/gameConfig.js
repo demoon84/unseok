@@ -30,9 +30,11 @@ export const GAME_CONFIG = {
         POWER_DROP_CHANCE: 0.03, // 3%
         SHIELD_DROP_CHANCE: 0.10, // 10%
         HEALTH_DROP_CHANCE: 0.30, // 보스 처치 시에만 사용됨
+        BOMB_DROP_CHANCE: 1.0, // 100% (거대 운석에서만)
         POWER_ENERGY_RESTORE: 5,
         HEALTH_ENERGY_RESTORE: 30,
         SHIELD_MAX_STACK: 3, // 보호막 최대 중첩
+        BOMB_MAX_STACK: 2, // 폭탄 최대 보유량
     },
 
     SCORE: {

@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styles from './GameOver.module.css';
-import { addScore, getTodayRanking, getWeeklyRanking, isHighScore } from '../../utils/leaderboard';
+import { addScore, fetchRankings, getTodayRanking, getWeeklyRanking, isHighScore } from '../../../utils/leaderboard';
+
+// 랜덤 이름 목록
+const RANDOM_NAMES = [
+    '우주조종사', '스타파일럿', '은하수호자', '혜성사냥꾼', '네뷸라',
+    '오리온', '안드로메다', '시리우스', '베가', '알타이르',
+    '폴라리스', '카시오페아', '플레이아데스', '드래코', '페가수스',
+    '피닉스', '하이드라', '센타우루스', '아퀼라', '시그너스'
+];
 
 export function GameOver({ score, onRestart, onMainMenu }) {
     const [name, setName] = useState('');
@@ -10,16 +18,32 @@ export function GameOver({ score, onRestart, onMainMenu }) {
     const [weeklyRanking, setWeeklyRanking] = useState([]);
     const [canSubmit, setCanSubmit] = useState(false);
 
+    // 랜덤 이름 생성
+    const generateRandomName = () => {
+        const randomIndex = Math.floor(Math.random() * RANDOM_NAMES.length);
+        setName(RANDOM_NAMES[randomIndex]);
+    };
+
     useEffect(() => {
-        setCanSubmit(isHighScore(score));
-        setTodayRanking(getTodayRanking());
-        setWeeklyRanking(getWeeklyRanking());
+        // localStorage에서 마지막 사용 이름 불러오기
+        const savedName = localStorage.getItem('playerName');
+        if (savedName) {
+            setName(savedName);
+        }
+        // 순위 데이터 로드
+        fetchRankings().then(() => {
+            setCanSubmit(isHighScore(score));
+            setTodayRanking(getTodayRanking());
+            setWeeklyRanking(getWeeklyRanking());
+        });
     }, [score]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (name.trim() && !submitted) {
-            addScore(name.trim(), score);
+            // 이름을 localStorage에 저장
+            localStorage.setItem('playerName', name.trim());
+            await addScore(name.trim(), score);
             setSubmitted(true);
             setTodayRanking(getTodayRanking());
             setWeeklyRanking(getWeeklyRanking());
@@ -41,16 +65,33 @@ export function GameOver({ score, onRestart, onMainMenu }) {
                 {canSubmit && !submitted && (
                     <form className={styles.form} onSubmit={handleSubmit}>
                         <p className={styles.congrats}>🎉 순위권 진입!</p>
-                        <input
-                            type="text"
-                            className={styles.input}
-                            placeholder="이름을 입력하세요"
-                            value={name}
-                            onChange={(e) => setName(e.target.value.slice(0, 10))}
-                            maxLength={10}
-                            autoFocus
-                        />
-                        <button type="submit" className={styles.submitButton} disabled={!name.trim()}>
+                        <div className={styles.inputRow}>
+                            <input
+                                type="text"
+                                className={styles.input}
+                                placeholder="이름을 입력하세요"
+                                value={name}
+                                onChange={(e) => setName(e.target.value.slice(0, 10))}
+                                maxLength={10}
+                                autoFocus
+                                onTouchStart={(e) => e.stopPropagation()}
+                            />
+                            <button
+                                type="button"
+                                className={styles.randomButton}
+                                onClick={generateRandomName}
+                                onTouchEnd={(e) => { e.preventDefault(); generateRandomName(); }}
+                                title="랜덤 이름"
+                            >
+                                🎲
+                            </button>
+                        </div>
+                        <button
+                            type="submit"
+                            className={styles.submitButton}
+                            disabled={!name.trim()}
+                            onTouchEnd={(e) => { e.preventDefault(); if (name.trim()) handleSubmit(e); }}
+                        >
                             등록
                         </button>
                     </form>
@@ -65,12 +106,14 @@ export function GameOver({ score, onRestart, onMainMenu }) {
                     <button
                         className={`${styles.tab} ${activeTab === 'today' ? styles.activeTab : ''}`}
                         onClick={() => setActiveTab('today')}
+                        onTouchEnd={(e) => { e.preventDefault(); setActiveTab('today'); }}
                     >
                         오늘의 순위
                     </button>
                     <button
                         className={`${styles.tab} ${activeTab === 'weekly' ? styles.activeTab : ''}`}
                         onClick={() => setActiveTab('weekly')}
+                        onTouchEnd={(e) => { e.preventDefault(); setActiveTab('weekly'); }}
                     >
                         주간 순위
                     </button>
@@ -93,11 +136,12 @@ export function GameOver({ score, onRestart, onMainMenu }) {
 
                 {/* 버튼 */}
                 <div className={styles.buttons}>
-                    <button className={styles.restartButton} onClick={onRestart}>
+                    <button
+                        className={styles.restartButton}
+                        onClick={onMainMenu}
+                        onTouchEnd={(e) => { e.preventDefault(); onMainMenu(); }}
+                    >
                         다시 시작
-                    </button>
-                    <button className={styles.menuButton} onClick={onMainMenu}>
-                        메인 메뉴
                     </button>
                 </div>
             </div>

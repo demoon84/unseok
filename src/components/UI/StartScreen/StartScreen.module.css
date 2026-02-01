@@ -168,3 +168,161 @@
         font-size: 1rem;
     }
 }
+
+/* 순위 토글 버튼 */
+.rankingToggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #fbbf24;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.2s;
+    backdrop-filter: blur(4px);
+}
+
+.rankingToggle:hover {
+    transform: scale(1.1);
+    background: rgba(251, 191, 36, 0.2);
+}
+
+/* 순위 패널 */
+.rankingPanel {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    width: 280px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 2px solid #334155;
+    border-radius: 15px;
+    padding: 15px;
+    z-index: 99;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.rankingHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.rankingHeader h3 {
+    margin: 0;
+    color: #fbbf24;
+    font-size: 1.1rem;
+}
+
+.closeButton {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.closeButton:hover {
+    color: #f1f5f9;
+}
+
+.rankingTabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.tab {
+    flex: 1;
+    padding: 8px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    background: transparent;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.activeTab {
+    color: #f1f5f9;
+    background: #334155;
+    border-color: #22c55e;
+}
+
+.rankingList {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.empty {
+    color: #64748b;
+    text-align: center;
+    padding: 30px 0;
+    font-size: 0.9rem;
+}
+
+.rankItem {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.gold {
+    background: linear-gradient(90deg, rgba(251, 191, 36, 0.2), transparent);
+    border-left: 3px solid #fbbf24;
+}
+
+.silver {
+    background: linear-gradient(90deg, rgba(148, 163, 184, 0.2), transparent);
+    border-left: 3px solid #94a3b8;
+}
+
+.bronze {
+    background: linear-gradient(90deg, rgba(217, 119, 6, 0.2), transparent);
+    border-left: 3px solid #d97706;
+}
+
+.rank {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fbbf24;
+    width: 25px;
+}
+
+.gold .rank {
+    color: #fbbf24;
+}
+
+.silver .rank {
+    color: #94a3b8;
+}
+
+.bronze .rank {
+    color: #d97706;
+}
+
+.name {
+    flex: 1;
+    color: #f1f5f9;
+    font-size: 0.9rem;
+}
+
+.rankScore {
+    color: #22c55e;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
