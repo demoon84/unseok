@@ -1,6 +1,6 @@
 .container {
     position: absolute;
-    top: 2rem;
+    top: 3rem;
     left: 2rem;
     right: 2rem;
     display: flex;
@@ -186,7 +186,7 @@
 
 @media (max-width: 480px) {
     .container {
-        top: 1rem;
+        top: 2.5rem;
         left: 1rem;
         right: 1rem;
     }

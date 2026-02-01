@@ -182,7 +182,7 @@ export function GameCanvas({
         player.powerLevel = 1;
         player.energy = GAME_CONFIG.PLAYER.MAX_ENERGY;
         player.shield = 0; // 보호막 초기화
-        player.bombs = 1; // 폭탄 초기화 (시작 시 1개)
+        player.bombs = 2; // 폭탄 초기화 (시작 시 2개)
         player.invincible = true; // 진입 중 무적
         player.invincibleTimer = 60; // 1초 무적
         player.x = canvas.width / 2;
@@ -194,7 +194,7 @@ export function GameCanvas({
         onScoreUpdate(0);
         onEnergyUpdate(GAME_CONFIG.PLAYER.MAX_ENERGY);
         onPowerLevelUpdate(1);
-        onBombUpdate?.(1);
+        onBombUpdate?.(2);
     }, [onScoreUpdate, onEnergyUpdate, onPowerLevelUpdate, onBombUpdate]);
 
     // Trigger damage - 운석 충돌 시 보호막/파워/에너지 처리
@@ -522,8 +522,8 @@ export function GameCanvas({
                 continue;
             }
 
-            // Bullet collision (화면에 완전히 들어온 운석만 피격 가능)
-            const isOnScreen = enemy.y > 0;
+            // Bullet collision (화면 상단 100px 이후부터 피격 가능)
+            const isOnScreen = enemy.y > 100;
             if (isOnScreen) {
                 for (let j = bulletsRef.current.length - 1; j >= 0; j--) {
                     const bullet = bulletsRef.current[j];
