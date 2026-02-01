@@ -510,8 +510,8 @@ export function GameCanvas({
             enemy.draw(ctx);
 
             if (!player.invincible && enemy.checkPlayerCollision(player.x, player.y)) {
-                // 충돌 시 80% 확률로 파워 또는 쉴드 아이템 드랍 (플레이어 위쪽에 생성)
-                if (!enemy.isBoss && Math.random() < 0.8) {
+                // 충돌 시 50% 확률로 파워 또는 쉴드 아이템 드랍 (플레이어 위쪽에 생성)
+                if (!enemy.isBoss && Math.random() < 0.5) {
                     const itemType = Math.random() < 0.7 ? 'POWER' : 'SHIELD'; // 70% 파워, 30% 쉴드
                     itemsRef.current.push(new Item(player.x, player.y - 50, itemType));
                 }
