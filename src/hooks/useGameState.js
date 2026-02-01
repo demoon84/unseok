@@ -61,11 +61,19 @@ export function useGameState() {
         setGameState('gameover');
     }, []);
 
-    // Victory - 남은 에너지 보너스 점수 추가
+    // Victory - 남은 에너지 보너스 + 클리어 타임 보너스
     const handleVictory = useCallback(() => {
-        setScore(prev => prev + Math.floor(energy * 10)); // 에너지 × 10 보너스
+        // 클리어 타임 보너스 (빠른 클리어 = 높은 보너스)
+        let clearTimeBonus = 0;
+        if (elapsedTime <= 120) clearTimeBonus = 20000;      // 2분 이내
+        else if (elapsedTime <= 180) clearTimeBonus = 10000; // 3분 이내
+        else if (elapsedTime <= 240) clearTimeBonus = 5000;  // 4분 이내
+        // 4분 초과: 0점
+
+        const energyBonus = Math.floor(energy * 10); // 에너지 × 10 보너스
+        setScore(prev => prev + energyBonus + clearTimeBonus);
         setGameState('victory');
-    }, [energy]);
+    }, [energy, elapsedTime]);
 
     return {
         // State

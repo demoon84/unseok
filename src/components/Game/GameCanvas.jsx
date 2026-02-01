@@ -49,6 +49,7 @@ export function GameCanvas({
     const bombEffectRef = useRef({ active: false, startTime: 0, centerX: 0, centerY: 0 }); // 폭탄 효과
     const initialPowerDroppedRef = useRef(false); // 초기 파워 드랍 여부
     const initialShieldDroppedRef = useRef(false); // 초기 쉴드 드랍 여부
+    const bossSpawnTimeRef = useRef(null); // 보스 스폰 시간 (타이머 보너스 계산용)
 
     const playerRef = useRef({
         x: 0,
@@ -128,9 +129,11 @@ export function GameCanvas({
                 scoreGain += 50;
             }
 
-            // 보스에게 데미지 (HP의 10%)
+            // 보스에게 데미지 (단계별 차등: 1차=50%, 2차=40%, 3차=30%)
             if (bossRef.current) {
-                const bossDamage = Math.floor(bossRef.current.hp * (2 / 3)); // 남은 HP의 2/3 데미지
+                const bossNum = bossSpawnedCountRef.current;
+                const damagePercent = bossNum === 1 ? 0.5 : (bossNum === 2 ? 0.4 : 0.3);
+                const bossDamage = Math.floor(bossRef.current.maxHp * damagePercent);
                 bossRef.current.hp -= bossDamage;
                 onBossDamage?.(bossRef.current.hp, bossRef.current.maxHp);
 
@@ -218,8 +221,8 @@ export function GameCanvas({
             return;
         }
 
-        // 파워 레벨 감소 (1 감소, 최소 1)
-        const newPowerLevel = Math.max(1, player.powerLevel - 1);
+        // 파워 레벨 감소 (1 감소, 최소 3)
+        const newPowerLevel = Math.max(3, player.powerLevel - 1);
         if (player.powerLevel !== newPowerLevel) {
             player.powerLevel = newPowerLevel;
             onPowerLevelUpdate(player.powerLevel);
@@ -270,9 +273,11 @@ export function GameCanvas({
             scoreGain += 50; // 적당 50점
         }
 
-        // 보스에게 데미지 (HP의 10%)
+        // 보스에게 데미지 (단계별 차등: 1차=50%, 2차=40%, 3차=30%)
         if (bossRef.current) {
-            const bossDamage = Math.floor(bossRef.current.hp * (2 / 3)); // 남은 HP의 2/3 데미지
+            const bossNum = bossSpawnedCountRef.current;
+            const damagePercent = bossNum === 1 ? 0.5 : (bossNum === 2 ? 0.4 : 0.3);
+            const bossDamage = Math.floor(bossRef.current.maxHp * damagePercent);
             bossRef.current.hp -= bossDamage;
             onBossDamage?.(bossRef.current.hp, bossRef.current.maxHp);
 
@@ -298,7 +303,6 @@ export function GameCanvas({
             useBombRef.current = useBomb;
         }
     }, [useBomb, useBombRef]);
-
     // Spawn boss
     const spawnBoss = useCallback((bossNumber) => {
         if (bossActiveRef.current) return;
@@ -309,6 +313,8 @@ export function GameCanvas({
         setTimeout(() => {
             const canvas = canvasRef.current;
             if (canvas && gameActiveRef.current) {
+                // 보스 스폰 시간 기록 (타이머 보너스 계산용)
+                bossSpawnTimeRef.current = Date.now();
                 // 경과 시간(분) 계산
                 const elapsedMinutes = Math.floor((Date.now() - gameStartTimeRef.current) / 60000);
                 const boss = new Enemy(canvas.width, scoreRef.current, true, null, null, null, false, elapsedMinutes, bossNumber);
@@ -346,7 +352,7 @@ export function GameCanvas({
         if (player.powerLevel >= 3) {
             const now = Date.now();
             if (lastWeaponDecayTimeRef.current && now - lastWeaponDecayTimeRef.current >= 10000) {
-                player.powerLevel = Math.max(2, player.powerLevel - 1);
+                player.powerLevel = Math.max(3, player.powerLevel - 1);
                 onPowerLevelUpdate(player.powerLevel);
                 lastWeaponDecayTimeRef.current = now;
             }
@@ -405,23 +411,23 @@ export function GameCanvas({
         updateBullets(canvas.width);
         drawBullets(ctx, bulletsRef.current);
 
-        // 보스 스폰 로직 (3분 기준 설계)
-        // 1번째 보스: 게임 시작 45초 후
-        // 2번째 보스: 1번째 보스 처치 45초 후
-        // 3번째 보스: 2번째 보스 처치 45초 후
-        const bossIntervalMs = 45 * 1000; // 45초
+        // 보스 스폰 로직
+        // 1번째 보스: 게임 시작 30초 후
+        // 2번째 보스: 1번째 보스 처치 30초 후
+        // 3번째 보스: 2번째 보스 처치 30초 후
+        const bossIntervalMs = 30 * 1000; // 모든 보스: 30초
 
         if (!bossActiveRef.current && bossSpawnedCountRef.current < GAME_CONFIG.BOSS.TOTAL_BOSSES) {
             let shouldSpawnBoss = false;
 
             if (bossSpawnedCountRef.current === 0) {
-                // 첫 보스: 게임 시작 1분 후
+                // 첫 보스: 게임 시작 30초 후
                 const elapsedMs = Date.now() - gameStartTimeRef.current;
                 if (elapsedMs >= bossIntervalMs) {
                     shouldSpawnBoss = true;
                 }
             } else {
-                // 이후 보스: 이전 보스 처치 1분 후
+                // 이후 보스: 이전 보스 처치 30초 후
                 if (lastBossDefeatTimeRef.current) {
                     const timeSinceDefeat = Date.now() - lastBossDefeatTimeRef.current;
                     if (timeSinceDefeat >= bossIntervalMs) {
@@ -452,27 +458,31 @@ export function GameCanvas({
             const newEnemy = new Enemy(canvas.width, score, false, null, null, null, false, elapsedMinutes);
             enemiesRef.current.push(newEnemy);
 
-            // 거대 운석이 등장하면 추가 운석들도 함께 스폰
-            if (newEnemy.isBig) {
-                const extraCount = 2 + Math.floor(Math.random() * 3); // 2~4개 추가
-                for (let k = 0; k < extraCount; k++) {
-                    // 약간의 시간차를 두고 다른 위치에서 스폰
+            // 보스전 중 운석 폭포 효과 (보스 단계별 차등)
+            if (bossActiveRef.current) {
+                // 1차 보스: 5~10개, 2차 보스: 10~15개, 3차 보스: 15~25개
+                const bossNum = bossSpawnedCountRef.current;
+                const baseCount = bossNum === 1 ? 5 : (bossNum === 2 ? 10 : 15);
+                const extraRange = bossNum === 1 ? 6 : (bossNum === 2 ? 6 : 11);
+                const meteorCount = baseCount + Math.floor(Math.random() * extraRange);
+
+                for (let k = 0; k < meteorCount; k++) {
                     setTimeout(() => {
-                        if (gameActiveRef.current && canvasRef.current) {
-                            const extraEnemy = new Enemy(canvasRef.current.width, scoreRef.current, false, null, null, null, false, elapsedMinutes);
-                            // 추가 운석은 작은 운석으로 강제 설정
-                            extraEnemy.isBig = false;
-                            extraEnemy.width = 30 + Math.random() * 20;
-                            extraEnemy.height = extraEnemy.width;
-                            extraEnemy.initialWidth = extraEnemy.width;
-                            extraEnemy.color = '#334155';
-                            extraEnemy.generateShape();
-                            extraEnemy.generateCraters();
-                            enemiesRef.current.push(extraEnemy);
+                        if (gameActiveRef.current && canvasRef.current && bossActiveRef.current) {
+                            const meteorEnemy = new Enemy(canvasRef.current.width, scoreRef.current, false, null, null, null, false, elapsedMinutes);
+                            meteorEnemy.isBig = false;
+                            meteorEnemy.width = 25 + Math.random() * 25;
+                            meteorEnemy.height = meteorEnemy.width;
+                            meteorEnemy.initialWidth = meteorEnemy.width;
+                            meteorEnemy.color = '#334155';
+                            meteorEnemy.generateShape();
+                            meteorEnemy.generateCraters();
+                            enemiesRef.current.push(meteorEnemy);
                         }
-                    }, k * 100); // 100ms 간격으로 스폰
+                    }, k * 80);
                 }
             }
+
             spawnTimerRef.current = 0;
         }
 
@@ -499,8 +509,12 @@ export function GameCanvas({
             enemy.update(canvas.width, canvas.height);
             enemy.draw(ctx);
 
-            // Player collision
             if (!player.invincible && enemy.checkPlayerCollision(player.x, player.y)) {
+                // 충돌 시 50% 확률로 파워 또는 쉴드 아이템 드랍 (플레이어 위쪽에 생성)
+                if (!enemy.isBoss && Math.random() < 0.5) {
+                    const itemType = Math.random() < 0.7 ? 'POWER' : 'SHIELD'; // 70% 파워, 30% 쉴드
+                    itemsRef.current.push(new Item(player.x, player.y - 50, itemType));
+                }
                 triggerDamage(enemy.getDamageValue());
                 if (!enemy.isBoss) {
                     enemiesRef.current.splice(i, 1);
@@ -516,7 +530,12 @@ export function GameCanvas({
                     if (enemy.checkBulletCollision(bullet.x, bullet.y)) {
                         // 무기 레벨에 따른 데미지: 레벨 1~4는 1~4, 레벨 5~9는 5~9, 레벨 10은 15
                         const powerLevel = player.powerLevel;
-                        const damage = powerLevel === 10 ? 15 : powerLevel;
+                        const baseDamage = powerLevel === 10 ? 15 : powerLevel;
+
+                        // 시간에 따른 데미지 감소 2배 강화 (1분=100%, 2분=60%, 3분=30%)
+                        const damageReduction = Math.max(0.25, 1 - (elapsedMinutes * 0.4));
+                        const damage = Math.max(1, Math.floor(baseDamage * damageReduction));
+
                         const isDestroyed = enemy.takeDamage(damage);
                         bulletsRef.current.splice(j, 1);
                         onBulletHit?.(); // 발사체 명중 효과음
@@ -585,8 +604,10 @@ export function GameCanvas({
                                 particlesRef.current.push(new Particle(enemy.x, enemy.y, enemy.color));
                             }
 
-                            // Update score
-                            scoreRef.current += enemy.getScoreValue();
+                            // Update score (보스전 중에는 일반 적 점수 50% 감소)
+                            const baseScore = enemy.getScoreValue();
+                            const scoreMultiplier = (!enemy.isBoss && bossActiveRef.current) ? 0.5 : 1.0;
+                            scoreRef.current += Math.floor(baseScore * scoreMultiplier);
                             onScoreUpdate(scoreRef.current);
 
                             // Boss defeat - drops energy and power
@@ -594,9 +615,23 @@ export function GameCanvas({
                                 bossActiveRef.current = false;
                                 bossRef.current = null;
                                 lastBossDefeatTimeRef.current = Date.now(); // 보스 처치 시간 기록
+
+                                // 보스 타이머 보너스 계산 (빠른 처치 = 높은 보너스)
+                                const bossKillTime = bossSpawnTimeRef.current
+                                    ? (Date.now() - bossSpawnTimeRef.current) / 1000
+                                    : 60;
+                                let timerBonus = 500; // 기본 보너스
+                                if (bossKillTime <= 20) timerBonus = 5000;      // 20초 이내
+                                else if (bossKillTime <= 30) timerBonus = 3000; // 30초 이내
+                                else if (bossKillTime <= 45) timerBonus = 1500; // 45초 이내
+                                scoreRef.current += timerBonus;
+                                onScoreUpdate(scoreRef.current);
+                                bossSpawnTimeRef.current = null;
+
                                 onBossDefeat();
-                                // 보스 처치 시에만 에너지 드랍
+                                // 보스 처치 보상: 에너지, 파워, 폭탄 드랍
                                 itemsRef.current.push(new Item(enemy.x, enemy.y, 'HEALTH'));
+                                itemsRef.current.push(new Item(enemy.x, enemy.y + 40, 'BOMB')); // 폭탄 100% 드랍
                                 for (let m = 0; m < 2; m++) {
                                     itemsRef.current.push(new Item(enemy.x + (m - 1) * 40, enemy.y, 'POWER'));
                                 }

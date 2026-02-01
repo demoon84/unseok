@@ -23,8 +23,8 @@ export class Enemy {
     }
 
     initBoss(canvasWidth, score, elapsedMinutes, bossNumber) {
-        // 단계별 크기 배율: 1단계=2배, 2단계=4배, 3단계=5배
-        const sizeMultiplier = bossNumber === 1 ? 2 : (bossNumber === 2 ? 4 : 5);
+        // 단계별 크기 배율: 1단계=2배, 2단계=5배, 3단계=10배
+        const sizeMultiplier = bossNumber === 1 ? 2 : (bossNumber === 2 ? 5 : 10);
         const baseWidth = GAME_CONFIG.ENEMY.BOSS_WIDTH;
         const calculatedWidth = baseWidth * sizeMultiplier;
         // 화면 너비의 60%를 최대 크기로 제한
@@ -32,7 +32,7 @@ export class Enemy {
         this.width = Math.min(calculatedWidth, maxWidth);
         this.height = this.width;
         this.x = canvasWidth / 2;
-        this.y = -this.height;
+        this.y = -this.height * 1.5; // 화면 상단 밖에서 등장 (크기의 1.5배 위)
         this.speed = 2.5 + (bossNumber * 0.3); // 속도 증가
         // 튕기는 방향 초기화 (대각선으로 시작)
         const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5; // 약 45도 각도
@@ -151,7 +151,8 @@ export class Enemy {
             if (this.y > canvasHeight - bottomSafeZone - margin) {
                 this.y = canvasHeight - bottomSafeZone - margin;
                 this.vy *= -1;
-            } else if (this.y < margin + 50) { // 상단 여백 50
+            } else if (this.y > margin && this.y < margin + 50 && this.vy < 0) {
+                // 보스가 화면 안에 들어온 후에만 상단 반사 (진입 중에는 반사 안함)
                 this.y = margin + 50;
                 this.vy *= -1;
             }
