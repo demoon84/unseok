@@ -89,10 +89,11 @@ export class Enemy {
         // 데미지: 크기에 정비례 (작은 운석 = 10, 큰 운석 = 30)
         this.damage = Math.floor(this.width / 4);
 
-        // HP calculation with time-based bonus (1분당 HP 보너스 추가)
+        // HP calculation with time-based bonus (3분 기준 설계)
         // 모든 운석: 동일한 HP 공식 (크기/10 + 시간 보너스)
         const baseHp = Math.ceil(this.width / 10);
-        const timeBonus = elapsedMinutes * 8;
+        // 시간 보너스: 3분 기준 급증 (1분=15, 2분=40, 3분=75)
+        const timeBonus = Math.floor(elapsedMinutes * 10 + Math.pow(elapsedMinutes, 2) * 5);
         this.maxHp = baseHp + Math.floor(scoreDifficulty * 3) + timeBonus;
         this.hp = this.maxHp;
         this.color = isBig ? '#1e293b' : '#334155';

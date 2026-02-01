@@ -405,11 +405,11 @@ export function GameCanvas({
         updateBullets(canvas.width);
         drawBullets(ctx, bulletsRef.current);
 
-        // 보스 스폰 로직 (30초 간격 - 테스트용)
-        // 1번째 보스: 게임 시작 30초 후
-        // 2번째 보스: 1번째 보스 처치 30초 후
-        // 3번째 보스: 2번째 보스 처치 30초 후
-        const bossIntervalMs = 30 * 1000; // 30초
+        // 보스 스폰 로직 (3분 기준 설계)
+        // 1번째 보스: 게임 시작 45초 후
+        // 2번째 보스: 1번째 보스 처치 45초 후
+        // 3번째 보스: 2번째 보스 처치 45초 후
+        const bossIntervalMs = 45 * 1000; // 45초
 
         if (!bossActiveRef.current && bossSpawnedCountRef.current < GAME_CONFIG.BOSS.TOTAL_BOSSES) {
             let shouldSpawnBoss = false;
@@ -449,7 +449,30 @@ export function GameCanvas({
 
         if (spawnTimerRef.current > spawnThreshold) {
             // 경과 시간(분) 계산하여 적 HP에 반영
-            enemiesRef.current.push(new Enemy(canvas.width, score, false, null, null, null, false, elapsedMinutes));
+            const newEnemy = new Enemy(canvas.width, score, false, null, null, null, false, elapsedMinutes);
+            enemiesRef.current.push(newEnemy);
+
+            // 거대 운석이 등장하면 추가 운석들도 함께 스폰
+            if (newEnemy.isBig) {
+                const extraCount = 2 + Math.floor(Math.random() * 3); // 2~4개 추가
+                for (let k = 0; k < extraCount; k++) {
+                    // 약간의 시간차를 두고 다른 위치에서 스폰
+                    setTimeout(() => {
+                        if (gameActiveRef.current && canvasRef.current) {
+                            const extraEnemy = new Enemy(canvasRef.current.width, scoreRef.current, false, null, null, null, false, elapsedMinutes);
+                            // 추가 운석은 작은 운석으로 강제 설정
+                            extraEnemy.isBig = false;
+                            extraEnemy.width = 30 + Math.random() * 20;
+                            extraEnemy.height = extraEnemy.width;
+                            extraEnemy.initialWidth = extraEnemy.width;
+                            extraEnemy.color = '#334155';
+                            extraEnemy.generateShape();
+                            extraEnemy.generateCraters();
+                            enemiesRef.current.push(extraEnemy);
+                        }
+                    }, k * 100); // 100ms 간격으로 스폰
+                }
+            }
             spawnTimerRef.current = 0;
         }
 
