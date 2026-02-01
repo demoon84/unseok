@@ -127,6 +127,18 @@ npm run dev  # 자동으로 LAN 접근 허용
 
 ---
 
+## 🎵 오디오 크레딧
+
+본 게임에 사용된 모든 오디오 에셋은 무료 상업용 라이센스입니다.
+
+| 에셋 | 라이센스 | 제작자 | 링크 |
+|------|----------|--------|------|
+| 효과음 (50개) | CC0 | rubberduck | [50 CC0 Sci-Fi SFX](https://opengameart.org/content/50-cc0-sci-fi-sfx) |
+| 아이템 획득음 | CC-BY 3.0 | Blender Foundation | [Yo Frankie!](https://opengameart.org/content/positive-item-pickup-yo-frankie) |
+| BGM "Through Space" | CC-BY-SA 3.0 | maxstack | [OpenGameArt](https://opengameart.org/content/through-space) |
+
+---
+
 ## 📄 라이선스
 
 MIT License - 자유롭게 수정 및 배포 가능합니다.

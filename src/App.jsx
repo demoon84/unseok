@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { GameCanvas } from './components/Game/GameCanvas';
 import { StartScreen } from './components/UI/StartScreen/StartScreen';
 import { GameOver } from './components/UI/GameOver/GameOver';
@@ -9,6 +9,7 @@ import { GAME_CONFIG } from './constants/gameConfig';
 import { useGameState } from './hooks/useGameState';
 import { useBoss } from './hooks/useBoss';
 import { useEffects } from './hooks/useEffects';
+import { useSound } from './hooks/useSound';
 import './App.css';
 
 function App() {
@@ -53,22 +54,92 @@ function App() {
         triggerBombFlash,
     } = useEffects();
 
-    // Bomb ref
+    // 사운드 훅 (효과음만)
+    const {
+        playShoot,
+        playExplosion,
+        playPickup,
+        playHit,
+        playBulletHit,
+        playBomb,
+        playBossAlert,
+        playGameOver,
+        playVictory,
+    } = useSound();
+
+    // Refs
     const useBombRef = useRef(null);
+    const bgmRef = useRef(null);
+
+    // BGM 제어 함수
+    const startBGM = () => {
+        if (bgmRef.current) {
+            bgmRef.current.volume = 0.01; // BGM 최소
+            bgmRef.current.currentTime = 0;
+            bgmRef.current.play().catch(() => { });
+        }
+    };
+
+    const stopBGM = () => {
+        if (bgmRef.current) {
+            bgmRef.current.pause();
+            bgmRef.current.currentTime = 0;
+        }
+    };
 
     // 게임 시작 (보스 상태도 리셋)
     const handleStart = () => {
         gameStart();
         resetBossState();
+        startBGM(); // BGM 시작
     };
 
     // 보스 처치 핸들러
     const handleBossDefeat = () => {
         bossDefeat(setBossCount);
+        playExplosion(true); // 보스 폭발음
     };
+
+    // 데미지 + 효과음
+    const handleDamage = () => {
+        triggerDamageFlash();
+        playHit();
+    };
+
+    // 폭탄 사용 + 효과음
+    const handleBombUsed = () => {
+        triggerBombFlash();
+        playBomb();
+    };
+
+    // 보스 스폰 + 효과음
+    const handleBossSpawnWithSound = (bossNumber) => {
+        handleBossSpawn(bossNumber);
+        playBossAlert();
+    };
+
+    // 게임 오버/승리 효과음 + BGM 정지
+    useEffect(() => {
+        if (gameState === 'gameover') {
+            stopBGM();
+            playGameOver();
+        } else if (gameState === 'victory') {
+            stopBGM();
+            playVictory();
+        }
+    }, [gameState, playGameOver, playVictory, stopBGM]);
 
     return (
         <div className="app">
+            {/* BGM Audio Tag */}
+            <audio
+                ref={bgmRef}
+                src="/sounds/through_space.ogg"
+                loop
+                preload="auto"
+                style={{ display: 'none' }}
+            />
+
             {/* Flash overlay */}
             <div
                 className={`flash-overlay ${showDamageFlash ? 'damage-flash' : ''} ${showBossWarning ? 'boss-warning' : ''} ${showBombFlash ? 'bomb-flash' : ''}`}
@@ -84,12 +155,16 @@ function App() {
                 onBombUpdate={setBombs}
                 useBombRef={useBombRef}
                 onGameOver={handleGameOver}
-                onBossSpawn={handleBossSpawn}
+                onBossSpawn={handleBossSpawnWithSound}
                 onBossDefeat={handleBossDefeat}
                 onBossDamage={handleBossDamage}
-                onDamage={triggerDamageFlash}
-                onBombUsed={triggerBombFlash}
+                onDamage={handleDamage}
+                onBombUsed={handleBombUsed}
                 onLevelUp={() => { }}
+                onShoot={playShoot}
+                onExplosion={playExplosion}
+                onPickup={playPickup}
+                onBulletHit={playBulletHit}
                 elapsedTime={elapsedTime}
                 bossCount={bossCount}
             />

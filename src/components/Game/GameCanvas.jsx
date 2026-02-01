@@ -23,6 +23,10 @@ export function GameCanvas({
     onDamage,
     onBombUsed,
     onLevelUp,
+    onShoot,
+    onExplosion,
+    onPickup,
+    onBulletHit,
     elapsedTime = 0,
     bossCount = 0
 }) {
@@ -201,6 +205,9 @@ export function GameCanvas({
                 particlesRef.current.push(new Particle(player.x, player.y, '#3b82f6'));
             }
 
+            // 타격음 재생 (보호막 방어 시에도)
+            onDamage();
+
             // 짧은 무적 시간
             player.invincible = true;
             player.invincibleTimer = 30;
@@ -319,6 +326,7 @@ export function GameCanvas({
 
         // Auto-shoot
         shoot();
+        onShoot?.();
 
         const player = playerRef.current;
 
@@ -379,6 +387,7 @@ export function GameCanvas({
                 }
                 onEnergyUpdate(player.energy);
                 onLevelUp();
+                onPickup?.();
                 itemsRef.current.splice(i, 1);
                 continue;
             }
@@ -424,15 +433,18 @@ export function GameCanvas({
 
         // Spawn enemies
         const score = scoreRef.current; // score 변수 정의
+        const elapsedMinutes = Math.floor((Date.now() - gameStartTimeRef.current) / 60000);
         spawnTimerRef.current++;
+
+        // 스폰 간격: 점수 + 시간에 따라 감소 (더 많은 운석)
+        const timeReduction = elapsedMinutes * 2; // 1분당 2씩 감소
         const spawnThreshold = bossActiveRef.current
             ? GAME_CONFIG.ENEMY.BOSS_SPAWN_THRESHOLD
             : Math.max(GAME_CONFIG.ENEMY.MIN_SPAWN_THRESHOLD,
-                GAME_CONFIG.ENEMY.BASE_SPAWN_THRESHOLD - (score / 1000));
+                GAME_CONFIG.ENEMY.BASE_SPAWN_THRESHOLD - (score / 1000) - timeReduction);
 
         if (spawnTimerRef.current > spawnThreshold) {
             // 경과 시간(분) 계산하여 적 HP에 반영
-            const elapsedMinutes = Math.floor((Date.now() - gameStartTimeRef.current) / 60000);
             enemiesRef.current.push(new Enemy(canvas.width, score, false, null, null, null, false, elapsedMinutes));
             spawnTimerRef.current = 0;
         }
@@ -463,6 +475,12 @@ export function GameCanvas({
                         const damage = powerLevel === 10 ? 15 : powerLevel;
                         const isDestroyed = enemy.takeDamage(damage);
                         bulletsRef.current.splice(j, 1);
+                        onBulletHit?.(); // 발사체 명중 효과음
+                        // 운석 피격 시 폭발음 (거대 운석은 3회 반복)
+                        const explosionCount = enemy.isBig ? 3 : 1;
+                        for (let e = 0; e < explosionCount; e++) {
+                            setTimeout(() => onExplosion?.(enemy.isBoss), e * 50);
+                        }
 
                         if (enemy.isBoss) {
                             onBossDamage(enemy.hp, enemy.maxHp);
@@ -542,7 +560,7 @@ export function GameCanvas({
                                 // 일반 적 아이템 드랍 (풀파워 시 드랍률 1%)
                                 const isFullPower = player.powerLevel === 10;
                                 const powerDropChance = isFullPower ? 0.01 : GAME_CONFIG.ITEM.POWER_DROP_CHANCE;
-                                const shieldDropChance = isFullPower ? 0.01 : GAME_CONFIG.ITEM.SHIELD_DROP_CHANCE;
+                                const shieldDropChance = isFullPower ? 0 : GAME_CONFIG.ITEM.SHIELD_DROP_CHANCE;
                                 const bombDropChance = GAME_CONFIG.ITEM.BOMB_DROP_CHANCE;
 
                                 if (Math.random() < powerDropChance) {
@@ -551,10 +569,6 @@ export function GameCanvas({
                                 // 쉴드는 파편에서만 드랍
                                 if (enemy.isFragment && Math.random() < shieldDropChance) {
                                     itemsRef.current.push(new Item(enemy.x, enemy.y, 'SHIELD'));
-                                }
-                                // 폭탄은 거대 운석에서만 드랍
-                                if (enemy.isBig && Math.random() < bombDropChance) {
-                                    itemsRef.current.push(new Item(enemy.x, enemy.y, 'BOMB'));
                                 }
                             }
 

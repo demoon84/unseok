@@ -28,7 +28,7 @@ export const GAME_CONFIG = {
         SIZE: 20,
         SPEED: 3,
         POWER_DROP_CHANCE: 0.03, // 3%
-        SHIELD_DROP_CHANCE: 0.10, // 10%
+        SHIELD_DROP_CHANCE: 0.01, // 1%
         HEALTH_DROP_CHANCE: 0.30, // 보스 처치 시에만 사용됨
         BOMB_DROP_CHANCE: 1.0, // 100% (거대 운석에서만)
         POWER_ENERGY_RESTORE: 5,

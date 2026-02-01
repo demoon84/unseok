@@ -73,6 +73,7 @@ export class Enemy {
     initNormal(canvasWidth, score, scoreDifficulty, elapsedMinutes) {
         const bigChance = Math.min(0.6, 0.15 + (score / 20000));
         const isBig = Math.random() < bigChance;
+        this.isBig = isBig; // 거대 운석 여부 저장
 
         this.width = isBig ? (80 + Math.random() * 40) : (30 + Math.random() * 20);
         this.height = this.width;

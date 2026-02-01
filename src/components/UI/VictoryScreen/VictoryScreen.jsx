@@ -158,7 +158,7 @@ export function VictoryScreen({ score, elapsedTime, onRestart }) {
                 onClick={handleRestart}
                 onTouchEnd={handleRestart}
             >
-                다시 시작
+                홈
             </button>
         </div>
     );
