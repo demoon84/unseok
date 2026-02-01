@@ -172,7 +172,7 @@
 /* 순위 토글 버튼 */
 .rankingToggle {
     position: absolute;
-    top: 20px;
+    top: 50px;
     right: 20px;
     width: 50px;
     height: 50px;
@@ -194,7 +194,7 @@
 /* 순위 패널 */
 .rankingPanel {
     position: absolute;
-    top: 80px;
+    top: 110px;
     right: 20px;
     width: 280px;
     background: rgba(15, 23, 42, 0.95);
