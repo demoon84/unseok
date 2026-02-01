@@ -61,7 +61,7 @@ export function GameCanvas({
         energy: GAME_CONFIG.PLAYER.MAX_ENERGY,
         maxEnergy: GAME_CONFIG.PLAYER.MAX_ENERGY,
         shield: 0, // 보호막 스택 (최대 3)
-        bombs: 1, // 폭탄 보유량 (초기값 1, 최대 2)
+        bombs: 2, // 폭탄 보유량 (초기값 2, 최대 4)
         invincible: false,
         invincibleTimer: 0,
         isKeyboardMode: false
@@ -129,10 +129,10 @@ export function GameCanvas({
                 scoreGain += 50;
             }
 
-            // 보스에게 데미지 (단계별 차등: 1차=50%, 2차=40%, 3차=30%)
+            // 보스에게 데미지 (단계별 차등: 1차=50%, 2차=40%, 3차=35%)
             if (bossRef.current) {
                 const bossNum = bossSpawnedCountRef.current;
-                const damagePercent = bossNum === 1 ? 0.5 : (bossNum === 2 ? 0.4 : 0.3);
+                const damagePercent = bossNum === 1 ? 0.5 : (bossNum === 2 ? 0.4 : 0.35);
                 const bossDamage = Math.floor(bossRef.current.maxHp * damagePercent);
                 bossRef.current.hp -= bossDamage;
                 onBossDamage?.(bossRef.current.hp, bossRef.current.maxHp);
@@ -273,10 +273,10 @@ export function GameCanvas({
             scoreGain += 50; // 적당 50점
         }
 
-        // 보스에게 데미지 (단계별 차등: 1차=50%, 2차=40%, 3차=30%)
+        // 보스에게 데미지 (단계별 차등: 1차=50%, 2차=40%, 3차=35%)
         if (bossRef.current) {
             const bossNum = bossSpawnedCountRef.current;
-            const damagePercent = bossNum === 1 ? 0.5 : (bossNum === 2 ? 0.4 : 0.3);
+            const damagePercent = bossNum === 1 ? 0.5 : (bossNum === 2 ? 0.4 : 0.35);
             const bossDamage = Math.floor(bossRef.current.maxHp * damagePercent);
             bossRef.current.hp -= bossDamage;
             onBossDamage?.(bossRef.current.hp, bossRef.current.maxHp);
@@ -460,10 +460,10 @@ export function GameCanvas({
 
             // 보스전 중 운석 폭포 효과 (보스 단계별 차등)
             if (bossActiveRef.current) {
-                // 1차 보스: 5~10개, 2차 보스: 10~15개, 3차 보스: 15~25개
+                // 1차 보스: 5~10개, 2차 보스: 10~15개, 3차 보스: 10~18개
                 const bossNum = bossSpawnedCountRef.current;
-                const baseCount = bossNum === 1 ? 5 : (bossNum === 2 ? 10 : 15);
-                const extraRange = bossNum === 1 ? 6 : (bossNum === 2 ? 6 : 11);
+                const baseCount = bossNum === 1 ? 5 : (bossNum === 2 ? 10 : 10);
+                const extraRange = bossNum === 1 ? 6 : (bossNum === 2 ? 6 : 9);
                 const meteorCount = baseCount + Math.floor(Math.random() * extraRange);
 
                 for (let k = 0; k < meteorCount; k++) {
@@ -510,8 +510,8 @@ export function GameCanvas({
             enemy.draw(ctx);
 
             if (!player.invincible && enemy.checkPlayerCollision(player.x, player.y)) {
-                // 충돌 시 50% 확률로 파워 또는 쉴드 아이템 드랍 (플레이어 위쪽에 생성)
-                if (!enemy.isBoss && Math.random() < 0.5) {
+                // 충돌 시 80% 확률로 파워 또는 쉴드 아이템 드랍 (플레이어 위쪽에 생성)
+                if (!enemy.isBoss && Math.random() < 0.8) {
                     const itemType = Math.random() < 0.7 ? 'POWER' : 'SHIELD'; // 70% 파워, 30% 쉴드
                     itemsRef.current.push(new Item(player.x, player.y - 50, itemType));
                 }
@@ -532,8 +532,8 @@ export function GameCanvas({
                         const powerLevel = player.powerLevel;
                         const baseDamage = powerLevel === 10 ? 15 : powerLevel;
 
-                        // 시간에 따른 데미지 감소 2배 강화 (1분=100%, 2분=60%, 3분=30%)
-                        const damageReduction = Math.max(0.25, 1 - (elapsedMinutes * 0.4));
+                        // 시간에 따른 데미지 감소 (1분=100%, 2분=60%, 3분+=35%)
+                        const damageReduction = Math.max(0.35, 1 - (elapsedMinutes * 0.4));
                         const damage = Math.max(1, Math.floor(baseDamage * damageReduction));
 
                         const isDestroyed = enemy.takeDamage(damage);

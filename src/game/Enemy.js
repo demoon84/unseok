@@ -23,8 +23,8 @@ export class Enemy {
     }
 
     initBoss(canvasWidth, score, elapsedMinutes, bossNumber) {
-        // 단계별 크기 배율: 1단계=2배, 2단계=5배, 3단계=10배
-        const sizeMultiplier = bossNumber === 1 ? 2 : (bossNumber === 2 ? 5 : 10);
+        // 단계별 크기 배율: 1단계=2배, 2단계=5배, 3단계=7배
+        const sizeMultiplier = bossNumber === 1 ? 2 : (bossNumber === 2 ? 5 : 7);
         const baseWidth = GAME_CONFIG.ENEMY.BOSS_WIDTH;
         const calculatedWidth = baseWidth * sizeMultiplier;
         // 화면 너비의 60%를 최대 크기로 제한
@@ -38,8 +38,8 @@ export class Enemy {
         const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5; // 약 45도 각도
         this.vx = this.speed * (Math.random() > 0.5 ? 1 : -1);
         this.vy = this.speed;
-        // 보스 HP: 단계별로 대폭 증가 (2단계=3배, 3단계=5배)
-        const hpMultiplier = bossNumber === 1 ? 1 : (bossNumber === 2 ? 3 : 5);
+        // 보스 HP: 단계별로 대폭 증가 (2단계=3배, 3단계=4배)
+        const hpMultiplier = bossNumber === 1 ? 1 : (bossNumber === 2 ? 3 : 4);
         const scoreDifficulty = score / 5000;
         const baseHp = Math.floor(this.width * 5); // 기본 HP 증가
         const timeBonus = elapsedMinutes * 30;

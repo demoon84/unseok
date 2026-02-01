@@ -34,7 +34,7 @@ export const GAME_CONFIG = {
         POWER_ENERGY_RESTORE: 5,
         HEALTH_ENERGY_RESTORE: 30,
         SHIELD_MAX_STACK: 3, // 보호막 최대 중첩
-        BOMB_MAX_STACK: 2, // 폭탄 최대 보유량
+        BOMB_MAX_STACK: 4, // 폭탄 최대 보유량
     },
 
     SCORE: {

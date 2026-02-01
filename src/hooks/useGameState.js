@@ -16,7 +16,7 @@ export function useGameState() {
     const [energy, setEnergy] = useState(GAME_CONFIG.PLAYER.MAX_ENERGY);
     const [powerLevel, setPowerLevel] = useState(1);
     const [shield, setShield] = useState(0);
-    const [bombs, setBombs] = useState(1);
+    const [bombs, setBombs] = useState(2);
     const [elapsedTime, setElapsedTime] = useState(0);
     const [bossCount, setBossCount] = useState(0);
 
@@ -51,7 +51,7 @@ export function useGameState() {
         setEnergy(GAME_CONFIG.PLAYER.MAX_ENERGY);
         setPowerLevel(1);
         setShield(0);
-        setBombs(1);
+        setBombs(2);
         setElapsedTime(0);
         setBossCount(0);
     }, []);
