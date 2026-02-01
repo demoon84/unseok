@@ -60,6 +60,22 @@ export const GAME_CONFIG = {
         MAX_SPEED: 8,
         MAX_SIZE: 2,
     },
+
+    // 레벨 시스템 설정 (향후 확장 가능)
+    LEVEL: {
+        1: {
+            NAME: 'Level 1',
+            TARGET_SCORE: 120000,        // 목표 최대 점수
+            BOSS_INTERVAL_SECONDS: 30,   // 보스 등장 간격
+            TOTAL_BOSSES: 3,             // 총 보스 수
+            ENEMY_SPAWN_RATE: 1.0,       // 적 스폰 속도 배율
+            ENEMY_HP_MULTIPLIER: 1.0,    // 적 HP 배율
+            BOSS_HP_MULTIPLIER: 1.0,     // 보스 HP 배율
+            SCORE_MULTIPLIER: 1.0,       // 점수 배율
+        },
+        // 향후 레벨 추가 예시:
+        // 2: { NAME: 'Level 2', TARGET_SCORE: 180000, BOSS_INTERVAL_SECONDS: 25, ... }
+    },
 };
 
 // Weapon patterns by level
@@ -75,25 +91,25 @@ export const WEAPON_PATTERNS = {
         addBullet(12, -bSpeed);
     },
     4: (addBullet, bSpeed) => {
-        addBullet(-5, -bSpeed);
-        addBullet(5, -bSpeed);
-        addBullet(-15, -bSpeed, -2);
-        addBullet(15, -bSpeed, 2);
+        addBullet(-3, -bSpeed);
+        addBullet(3, -bSpeed);
+        addBullet(-8, -bSpeed, -1);
+        addBullet(8, -bSpeed, 1);
     },
 };
 
 // Get spread pattern for levels 5-9
 export const getSpreadPattern = (level, addBullet, bSpeed) => {
     for (let i = 0; i < level; i++) {
-        const angle = (i - (level - 1) / 2) * 0.25;
-        addBullet(0, -bSpeed, angle * 12);
+        const angle = (i - (level - 1) / 2) * 0.125; // 0.25 -> 0.125 (절반)
+        addBullet(0, -bSpeed, angle * 6); // 12 -> 6 (절반)
     }
 };
 
 // Max level pattern (BERSERK RED) - 퍼짐 1/3로 축소
 export const getMaxLevelPattern = (addBullet, bSpeed) => {
     for (let i = 0; i < 22; i++) {
-        const angle = (i - 10.5) * 0.09; // 0.28 -> 0.09 (1/3)
-        addBullet(0, -bSpeed - 5, angle * 5, true); // 16 -> 5 (1/3)
+        const angle = (i - 10.5) * 0.045; // 0.09 -> 0.045 (절반)
+        addBullet(0, -bSpeed - 5, angle * 2.5, true); // 5 -> 2.5 (절반)
     }
 };

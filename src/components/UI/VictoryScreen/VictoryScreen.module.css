@@ -281,3 +281,44 @@
     font-weight: bold;
     font-size: 0.9rem;
 }
+
+/* 버튼 그룹 */
+.buttonGroup {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.homeButton {
+    padding: 1.25rem 2rem;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 9999px;
+    font-weight: 900;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.homeButton:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.homeButton:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 480px) {
+    .buttonGroup {
+        flex-direction: row;
+        gap: 0.75rem;
+    }
+
+    .homeButton {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+    }
+}

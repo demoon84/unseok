@@ -45,7 +45,7 @@ export class Enemy {
         const timeBonus = elapsedMinutes * 30;
         this.maxHp = (baseHp + Math.floor(scoreDifficulty * 5) + timeBonus) * hpMultiplier;
         this.hp = this.maxHp;
-        this.damage = 50 * bossNumber; // 보스 충돌 데미지
+        this.damage = 10 * bossNumber; // 보스 충돌 데미지 (1차:10, 2차:20, 3차:30)
         this.color = '#1e293b';
         this.moveDir = 1;
         this.rotation = 0;
@@ -144,9 +144,9 @@ export class Enemy {
                 this.vx *= -1;
             }
 
-            // 상하 벽 충돌 - 가장자리 기준 (하단 25%는 비행기 영역 확보)
+            // 상하 벽 충돌 - 가장자리 기준 (하단 10%는 비행기 영역 확보)
             const margin = this.width / 2 + 20;
-            const bottomSafeZone = canvasHeight * 0.25; // 하단 25% 안전 영역
+            const bottomSafeZone = canvasHeight * 0.10; // 하단 10% 안전 영역
             if (this.y > canvasHeight - bottomSafeZone - margin) {
                 this.y = canvasHeight - bottomSafeZone - margin;
                 this.vy *= -1;

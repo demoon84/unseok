@@ -10,7 +10,7 @@ const RANDOM_NAMES = [
     '피닉스', '하이드라', '센타우루스', '아퀼라', '시그너스'
 ];
 
-export function VictoryScreen({ score, elapsedTime, onRestart }) {
+export function VictoryScreen({ score, elapsedTime, onRestart, onMainMenu }) {
     const [name, setName] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [activeTab, setActiveTab] = useState('today');
@@ -61,6 +61,12 @@ export function VictoryScreen({ score, elapsedTime, onRestart }) {
         e.stopPropagation();
         onRestart();
     }, [onRestart]);
+
+    const handleMainMenu = useCallback((e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onMainMenu();
+    }, [onMainMenu]);
 
     const rankings = activeTab === 'today' ? todayRanking : weeklyRanking;
 
@@ -153,13 +159,22 @@ export function VictoryScreen({ score, elapsedTime, onRestart }) {
                 )}
             </div>
 
-            <button
-                className={styles.restartButton}
-                onClick={handleRestart}
-                onTouchEnd={handleRestart}
-            >
-                홈
-            </button>
+            <div className={styles.buttonGroup}>
+                <button
+                    className={styles.restartButton}
+                    onClick={handleRestart}
+                    onTouchEnd={handleRestart}
+                >
+                    다시 시작
+                </button>
+                <button
+                    className={styles.homeButton}
+                    onClick={handleMainMenu}
+                    onTouchEnd={handleMainMenu}
+                >
+                    홈
+                </button>
+            </div>
         </div>
     );
 }

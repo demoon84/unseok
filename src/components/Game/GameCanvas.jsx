@@ -47,6 +47,8 @@ export function GameCanvas({
     const fullPowerStartTimeRef = useRef(null); // 풀파워 모드 시작 시간
     const lastWeaponDecayTimeRef = useRef(null); // 무기 레벨 감소 타이머
     const bombEffectRef = useRef({ active: false, startTime: 0, centerX: 0, centerY: 0 }); // 폭탄 효과
+    const initialPowerDroppedRef = useRef(false); // 초기 파워 드랍 여부
+    const initialShieldDroppedRef = useRef(false); // 초기 쉴드 드랍 여부
 
     const playerRef = useRef({
         x: 0,
@@ -170,6 +172,8 @@ export function GameCanvas({
         bossSpawnedCountRef.current = 0; // 보스 카운트 초기화
         lastBossDefeatTimeRef.current = null; // 보스 처치 시간 초기화
         lastWeaponDecayTimeRef.current = Date.now(); // 무기 감소 타이머 초기화
+        initialPowerDroppedRef.current = false; // 초기 파워 드랍 초기화
+        initialShieldDroppedRef.current = false; // 초기 쉴드 드랍 초기화
 
         const player = playerRef.current;
         player.powerLevel = 1;
@@ -449,6 +453,23 @@ export function GameCanvas({
             spawnTimerRef.current = 0;
         }
 
+        // 게임 시작 10초 내 파워 아이템 보장 드랍
+        const elapsedSeconds = (Date.now() - gameStartTimeRef.current) / 1000;
+        if (!initialPowerDroppedRef.current && elapsedSeconds >= 8 && elapsedSeconds <= 10) {
+            // 8~10초 사이에 화면 상단에서 파워 아이템 스폰
+            const spawnX = canvas.width * 0.3 + Math.random() * canvas.width * 0.4; // 중앙 40% 영역
+            itemsRef.current.push(new Item(spawnX, -20, 'POWER'));
+            initialPowerDroppedRef.current = true;
+        }
+
+        // 게임 시작 20초 내 쉴드 아이템 보장 드랍
+        if (!initialShieldDroppedRef.current && elapsedSeconds >= 18 && elapsedSeconds <= 20) {
+            // 18~20초 사이에 화면 상단에서 쉴드 아이템 스폰
+            const spawnX = canvas.width * 0.3 + Math.random() * canvas.width * 0.4;
+            itemsRef.current.push(new Item(spawnX, -20, 'SHIELD'));
+            initialShieldDroppedRef.current = true;
+        }
+
         // Update and draw enemies
         for (let i = enemiesRef.current.length - 1; i >= 0; i--) {
             const enemy = enemiesRef.current[i];
@@ -565,6 +586,7 @@ export function GameCanvas({
 
                                 if (Math.random() < powerDropChance) {
                                     itemsRef.current.push(new Item(enemy.x, enemy.y, 'POWER'));
+                                    initialPowerDroppedRef.current = true; // 파워 드랍됨
                                 }
                                 // 쉴드는 파편에서만 드랍
                                 if (enemy.isFragment && Math.random() < shieldDropChance) {

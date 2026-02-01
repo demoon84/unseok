@@ -188,6 +188,7 @@ function App() {
                         score={score}
                         elapsedTime={elapsedTime}
                         onRestart={handleStart}
+                        onMainMenu={() => setGameState('menu')}
                     />
                 )}
 
