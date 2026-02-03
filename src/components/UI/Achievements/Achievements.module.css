@@ -1,0 +1,152 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    padding: 1rem;
+}
+
+.modal {
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+    border: 2px solid #a855f7;
+    border-radius: 16px;
+    padding: 1.5rem;
+    max-width: 400px;
+    width: 100%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.3);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #334155;
+}
+
+.title {
+    color: #f8fafc;
+    font-size: 1.25rem;
+    margin: 0;
+    flex: 1;
+}
+
+.count {
+    color: #a855f7;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.closeBtn:hover {
+    color: #f8fafc;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.unlocked {
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.locked {
+    background: rgba(71, 85, 105, 0.2);
+    border: 1px solid transparent;
+    opacity: 0.6;
+}
+
+.icon {
+    font-size: 1.5rem;
+    width: 40px;
+    text-align: center;
+}
+
+.locked .icon {
+    filter: grayscale(1);
+}
+
+.info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.name {
+    color: #f8fafc;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.description {
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+.checkmark {
+    color: #22c55e;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* 스크롤바 */
+.list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.list::-webkit-scrollbar-track {
+    background: #1e293b;
+    border-radius: 3px;
+}
+
+.list::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 3px;
+}
+
+/* 모바일 */
+@media (max-width: 480px) {
+    .modal {
+        max-height: 70vh;
+        padding: 1.25rem;
+    }
+
+    .item {
+        padding: 0.625rem;
+    }
+
+    .icon {
+        font-size: 1.25rem;
+        width: 32px;
+    }
+}

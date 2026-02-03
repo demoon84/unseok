@@ -191,6 +191,28 @@
     background: rgba(251, 191, 36, 0.2);
 }
 
+/* 업적 버튼 */
+.achievementsToggle {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #a855f7;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.2s;
+    backdrop-filter: blur(4px);
+}
+
+.achievementsToggle:hover {
+    transform: scale(1.1);
+    background: rgba(168, 85, 247, 0.2);
+}
+
 /* 순위 패널 */
 .rankingPanel {
     position: absolute;

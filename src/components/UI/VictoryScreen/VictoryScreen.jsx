@@ -1,6 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import styles from './VictoryScreen.module.css';
 import { addScore, fetchRankings, getTodayRanking, getWeeklyRanking, isHighScore } from '../../../utils/leaderboard';
+import { ShareButton } from '../ShareButton/ShareButton';
+import { t } from '../../../utils/i18n';
 
 // 랜덤 이름 목록
 const RANDOM_NAMES = [
@@ -165,15 +167,18 @@ export function VictoryScreen({ score, elapsedTime, onRestart, onMainMenu }) {
                     onClick={handleRestart}
                     onTouchEnd={handleRestart}
                 >
-                    다시 시작
+                    {t('restart')}
                 </button>
                 <button
                     className={styles.homeButton}
                     onClick={handleMainMenu}
                     onTouchEnd={handleMainMenu}
                 >
-                    홈
+                    {t('mainMenu')}
                 </button>
+            </div>
+            <div className={styles.shareContainer}>
+                <ShareButton score={Math.floor(score)} />
             </div>
         </div>
     );

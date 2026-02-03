@@ -1,0 +1,70 @@
+.container {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.logo {
+    width: 200px;
+    height: auto;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+}
+
+.progressContainer {
+    width: 250px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progressBar {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    border-radius: 4px;
+    transition: width 0.2s ease-out;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.status {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+/* 모바일 */
+@media (max-width: 480px) {
+    .logo {
+        width: 150px;
+    }
+
+    .progressContainer {
+        width: 200px;
+    }
+}

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from './GameOver.module.css';
 import { addScore, fetchRankings, getTodayRanking, getWeeklyRanking, isHighScore } from '../../../utils/leaderboard';
+import { ShareButton } from '../ShareButton/ShareButton';
+import { t } from '../../../utils/i18n';
 
 // 랜덤 이름 목록
 const RANDOM_NAMES = [
@@ -141,8 +143,9 @@ export function GameOver({ score, onRestart, onMainMenu }) {
                         onClick={onMainMenu}
                         onTouchEnd={(e) => { e.preventDefault(); onMainMenu(); }}
                     >
-                        다시 시작
+                        {t('restart')}
                     </button>
+                    <ShareButton score={Math.floor(score)} />
                 </div>
             </div>
         </div>

@@ -61,21 +61,44 @@ export const GAME_CONFIG = {
         MAX_SIZE: 2,
     },
 
-    // 레벨 시스템 설정 (향후 확장 가능)
+    // 레벨 시스템 설정
     LEVEL: {
         1: {
-            NAME: 'Level 1',
-            TARGET_SCORE: 120000,        // 목표 최대 점수
-            BOSS_INTERVAL_SECONDS: 30,   // 보스 등장 간격
-            TOTAL_BOSSES: 3,             // 총 보스 수
-            ENEMY_SPAWN_RATE: 1.0,       // 적 스폰 속도 배율
-            ENEMY_HP_MULTIPLIER: 1.0,    // 적 HP 배율
-            BOSS_HP_MULTIPLIER: 1.0,     // 보스 HP 배율
-            SCORE_MULTIPLIER: 1.0,       // 점수 배율
+            NAME: { ko: '레벨 1: 첫 임무', en: 'Level 1: First Mission' },
+            TARGET_SCORE: 120000,
+            BOSS_INTERVAL_SECONDS: 30,
+            TOTAL_BOSSES: 3,
+            ENEMY_SPAWN_RATE: 1.0,
+            ENEMY_HP_MULTIPLIER: 1.0,
+            BOSS_HP_MULTIPLIER: 1.0,
+            SCORE_MULTIPLIER: 1.0,
         },
-        // 향후 레벨 추가 예시:
-        // 2: { NAME: 'Level 2', TARGET_SCORE: 180000, BOSS_INTERVAL_SECONDS: 25, ... }
+        2: {
+            NAME: { ko: '레벨 2: 심화 작전', en: 'Level 2: Advanced Op' },
+            TARGET_SCORE: 180000,
+            BOSS_INTERVAL_SECONDS: 25,
+            TOTAL_BOSSES: 4,
+            ENEMY_SPAWN_RATE: 1.2,
+            ENEMY_HP_MULTIPLIER: 1.3,
+            BOSS_HP_MULTIPLIER: 1.5,
+            SCORE_MULTIPLIER: 1.5,
+        },
+        3: {
+            NAME: { ko: '레벨 3: 최종 결전', en: 'Level 3: Final Battle' },
+            TARGET_SCORE: 250000,
+            BOSS_INTERVAL_SECONDS: 20,
+            TOTAL_BOSSES: 5,
+            ENEMY_SPAWN_RATE: 1.5,
+            ENEMY_HP_MULTIPLIER: 1.6,
+            BOSS_HP_MULTIPLIER: 2.0,
+            SCORE_MULTIPLIER: 2.0,
+        },
     },
+};
+
+// 현재 레벨 설정 가져오기
+export const getLevelConfig = (levelId) => {
+    return GAME_CONFIG.LEVEL[levelId] || GAME_CONFIG.LEVEL[1];
 };
 
 // Weapon patterns by level

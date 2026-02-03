@@ -1,0 +1,175 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal {
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+    border: 2px solid #3b82f6;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.title {
+    text-align: center;
+    color: #f8fafc;
+    font-size: 1.5rem;
+    margin: 0 0 1.5rem 0;
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.section {
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.sectionTitle {
+    color: #93c5fd;
+    font-size: 1rem;
+    margin: 0 0 1rem 0;
+}
+
+.control {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.control:last-child {
+    margin-bottom: 0;
+}
+
+.keys {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.keyRow {
+    display: flex;
+    gap: 4px;
+}
+
+.key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+    background: linear-gradient(180deg, #475569, #334155);
+    border: 1px solid #64748b;
+    border-radius: 6px;
+    color: #f8fafc;
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: 0 2px 0 #1e293b;
+}
+
+.icon {
+    font-size: 2rem;
+    width: 40px;
+    text-align: center;
+}
+
+.description {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+}
+
+.footer {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.checkbox input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.closeButton {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    background: linear-gradient(180deg, #3b82f6, #2563eb);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+    background: linear-gradient(180deg, #60a5fa, #3b82f6);
+    transform: translateY(-1px);
+}
+
+.closeButton:active {
+    transform: translateY(0);
+}
+
+/* 모바일 최적화 */
+@media (max-width: 480px) {
+    .modal {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.25rem;
+    }
+
+    .key {
+        min-width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+
+    .icon {
+        font-size: 1.75rem;
+    }
+}

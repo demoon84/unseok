@@ -322,3 +322,8 @@
         font-size: 1rem;
     }
 }
+
+/* 공유 버튼 컨테이너 */
+.shareContainer {
+    margin-top: 1rem;
+}

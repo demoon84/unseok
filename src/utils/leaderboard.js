@@ -1,4 +1,6 @@
 // Leaderboard utility - API 기반 글로벌 순위 (로컬에서는 localStorage fallback)
+import { showError, showInfo } from '../components/UI/Toast/Toast';
+import { t } from './i18n';
 
 const API_URL = '/api/leaderboard';
 const LOCAL_STORAGE_KEY = 'sky-dash-leaderboard';
@@ -57,12 +59,20 @@ export const fetchRankings = async () => {
 
     // 프로덕션에서는 API 호출
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(API_URL, {
+            signal: AbortSignal.timeout(5000) // 5초 타임아웃
+        });
         if (response.ok) {
             cachedRankings = await response.json();
+        } else {
+            throw new Error(`HTTP ${response.status}`);
         }
     } catch (error) {
         console.error('Failed to fetch rankings:', error);
+        // 오프라인 감지
+        if (!navigator.onLine) {
+            showInfo(t('offlineMode'));
+        }
     }
 
     return cachedRankings;
@@ -105,19 +115,41 @@ export const addScore = async (name, score) => {
             return true;
         }
 
-        // 프로덕션에서는 API 호출
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, score }),
-        });
+        // 프로덕션에서는 API 호출 (재시도 로직 포함)
+        let retries = 2;
+        let lastError = null;
 
-        if (response.ok) {
-            await fetchRankings();
-            return true;
+        while (retries >= 0) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, score }),
+                    signal: AbortSignal.timeout(5000)
+                });
+
+                if (response.ok) {
+                    await fetchRankings();
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                lastError = error;
+                retries--;
+                if (retries >= 0) {
+                    await new Promise(r => setTimeout(r, 1000)); // 1초 대기 후 재시도
+                }
+            }
         }
-    } catch (error) {
-        console.error('Failed to add score:', error);
+
+        // 모든 재시도 실패
+        console.error('Failed to add score after retries:', lastError);
+        if (!navigator.onLine) {
+            showError(t('offlineMode'));
+        } else {
+            showError(t('networkError'));
+        }
     } finally {
         isSubmitting = false;
     }

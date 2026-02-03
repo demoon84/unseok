@@ -1,8 +1,9 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import styles from './StartScreen.module.css';
 import { fetchRankings, getTodayRanking, getWeeklyRanking } from '../../../utils/leaderboard';
+import { t } from '../../../utils/i18n';
 
-export function StartScreen({ onStart }) {
+export function StartScreen({ onStart, onAchievements }) {
     const [isLaunching, setIsLaunching] = useState(false);
     const [showRanking, setShowRanking] = useState(false);
     const [activeTab, setActiveTab] = useState('today');
@@ -49,6 +50,23 @@ export function StartScreen({ onStart }) {
                 }}
             >
                 🏆
+            </button>
+
+            {/* 업적 버튼 */}
+            <button
+                className={styles.achievementsToggle}
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onAchievements?.();
+                }}
+                onTouchEnd={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onAchievements?.();
+                }}
+            >
+                🎖️
             </button>
 
             {/* 순위 패널 */}

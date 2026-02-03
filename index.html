@@ -3,14 +3,57 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#3b82f6" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="운석특공대" />
+  <link rel="apple-touch-icon" href="/logo.png" />
+  
+  <!-- SEO & Social -->
+  <meta name="description" content="광활한 우주에서 펼쳐지는 슈팅 게임! 운석을 피하고 보스를 처치하세요!" />
+  <meta name="keywords" content="게임, 슈팅, 아케이드, 운석, 우주, 모바일게임" />
+  <meta name="author" content="Meteor Commando Team" />
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="운석특공대 - Meteor Commando" />
+  <meta property="og:description" content="광활한 우주에서 펼쳐지는 슈팅 게임! 운석을 피하고 보스를 처치하세요!" />
+  <meta property="og:image" content="https://unseok.vercel.app/logo.png" />
+  <meta property="og:url" content="https://unseok.vercel.app" />
+  <meta property="og:site_name" content="운석특공대" />
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="운석특공대 - Meteor Commando" />
+  <meta name="twitter:description" content="광활한 우주에서 펼쳐지는 슈팅 게임! 운석을 피하고 보스를 처치하세요!" />
+  <meta name="twitter:image" content="https://unseok.vercel.app/logo.png" />
+  
+  <link rel="icon" type="image/png" href="/logo.png" />
   <title>운석특공대</title>
 </head>
 
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
+  
+  <!-- Service Worker 등록 -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('SW registered:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('SW registration failed:', error);
+          });
+      });
+    }
+  </script>
 </body>
 
 </html>

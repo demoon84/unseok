@@ -1,0 +1,24 @@
+{
+    "name": "운석특공대",
+    "short_name": "운석특공대",
+    "description": "광활한 우주에서 펼쳐지는 슈팅 게임! 운석을 피하고 보스를 처치하세요!",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#0f172a",
+    "theme_color": "#3b82f6",
+    "icons": [
+        {
+            "src": "/logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "games",
+        "entertainment"
+    ],
+    "lang": "ko",
+    "dir": "ltr"
+}

@@ -10,6 +10,8 @@ import styles from './GameCanvas.module.css';
 
 export function GameCanvas({
     gameState,
+    isPaused = false,
+    levelConfig = null,
     onScoreUpdate,
     onEnergyUpdate,
     onPowerLevelUpdate,
@@ -327,6 +329,19 @@ export function GameCanvas({
     // Main game loop
     const gameLoop = useCallback(() => {
         if (!gameActiveRef.current) return;
+
+        // 일시정지 상태면 배경만 그리고 다음 프레임 예약
+        if (isPaused) {
+            const canvas = canvasRef.current;
+            const ctx = canvas?.getContext('2d');
+            if (canvas && ctx) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawStars(ctx, starsRef.current, canvas.height, 0.1); // 느린 배경
+                drawPlayer(ctx, playerRef.current, true);
+            }
+            animationIdRef.current = requestAnimationFrame(() => gameLoopRef.current?.());
+            return;
+        }
 
         const canvas = canvasRef.current;
         const ctx = canvas?.getContext('2d');
