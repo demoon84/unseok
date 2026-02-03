@@ -26,7 +26,7 @@ const ASSETS = {
 
 export function LoadingScreen({ onComplete }) {
     const [progress, setProgress] = useState(0);
-    const [status, setStatus] = useState(t('loadingAssets'));
+    const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
         let loaded = 0;
@@ -37,9 +37,8 @@ export function LoadingScreen({ onComplete }) {
             setProgress(Math.floor((loaded / total) * 100));
 
             if (loaded >= total) {
-                setTimeout(() => {
-                    onComplete();
-                }, 300); // 로딩 완료 후 약간의 딜레이
+                // 로딩 완료 - 버튼 표시
+                setIsReady(true);
             }
         };
 
@@ -47,7 +46,7 @@ export function LoadingScreen({ onComplete }) {
         ASSETS.images.forEach(src => {
             const img = new Image();
             img.onload = updateProgress;
-            img.onerror = updateProgress; // 에러도 진행
+            img.onerror = updateProgress;
             img.src = src;
         });
 
@@ -57,7 +56,11 @@ export function LoadingScreen({ onComplete }) {
                 .then(() => updateProgress())
                 .catch(() => updateProgress());
         });
-    }, [onComplete]);
+    }, []);
+
+    const handleStart = () => {
+        onComplete();
+    };
 
     return (
         <div className={styles.container}>
@@ -68,16 +71,27 @@ export function LoadingScreen({ onComplete }) {
                     className={styles.logo}
                 />
 
-                <div className={styles.progressContainer}>
-                    <div
-                        className={styles.progressBar}
-                        style={{ width: `${progress}%` }}
-                    />
-                </div>
-
-                <div className={styles.status}>
-                    {status} {progress}%
-                </div>
+                {!isReady ? (
+                    <>
+                        <div className={styles.progressContainer}>
+                            <div
+                                className={styles.progressBar}
+                                style={{ width: `${progress}%` }}
+                            />
+                        </div>
+                        <div className={styles.status}>
+                            {t('loadingAssets')} {progress}%
+                        </div>
+                    </>
+                ) : (
+                    <button
+                        className={styles.startButton}
+                        onClick={handleStart}
+                        onTouchEnd={(e) => { e.preventDefault(); handleStart(); }}
+                    >
+                        🚀 {t('missionStart') || '임무 시작'}
+                    </button>
+                )}
             </div>
         </div>
     );

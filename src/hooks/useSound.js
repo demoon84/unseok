@@ -50,13 +50,18 @@ const VOLUMES = {
     victory: 1.0,       // 승리
 };
 
-export function useSound() {
+export function useSound(sfxEnabled = true) {
     const audioContextRef = useRef(null);
     const audioBuffers = useRef({});
-    const isEnabledRef = useRef(true);
+    const isEnabledRef = useRef(sfxEnabled);
     const lastPlayTime = useRef({});
     const isInitialized = useRef(false);
     const loadingRef = useRef(false);
+
+    // sfxEnabled 변경 시 ref 업데이트
+    useEffect(() => {
+        isEnabledRef.current = sfxEnabled;
+    }, [sfxEnabled]);
 
     // AudioContext 생성/반환
     const getAudioContext = useCallback(() => {

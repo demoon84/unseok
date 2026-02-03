@@ -9,16 +9,14 @@ export function Achievements({ achievements, onClose }) {
     return (
         <div
             className={styles.overlay}
-            onClick={onClose}
-            onTouchEnd={(e) => { e.target === e.currentTarget && onClose(); }}
+            onClick={(e) => { e.target === e.currentTarget && onClose(); }}
         >
             <div
                 className={styles.modal}
                 onClick={(e) => e.stopPropagation()}
-                onTouchEnd={(e) => e.stopPropagation()}
             >
                 <div className={styles.header}>
-                    <h2 className={styles.title}>🏆 {t('achievements')}</h2>
+                    <h2 className={styles.title}>🎖️ {t('achievements')}</h2>
                     <span className={styles.count}>{unlockedCount}/{totalCount}</span>
                     <button
                         className={styles.closeBtn}
@@ -29,7 +27,10 @@ export function Achievements({ achievements, onClose }) {
                     </button>
                 </div>
 
-                <div className={styles.list}>
+                <div
+                    className={styles.list}
+                    onTouchMove={(e) => e.stopPropagation()}
+                >
                     {achievements.map(achievement => (
                         <div
                             key={achievement.id}

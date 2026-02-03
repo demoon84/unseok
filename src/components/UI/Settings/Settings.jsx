@@ -1,38 +1,39 @@
-import React from 'react';
-import { t, getLanguage, setLanguage, getAvailableLanguages } from '../../../utils/i18n';
+import React, { useState, useEffect } from 'react';
+import { t, getLanguage, setLanguage, getAvailableLanguages, onLanguageChange } from '../../../utils/i18n';
 import styles from './Settings.module.css';
 
 export function Settings({
-    bgmVolume,
-    sfxVolume,
-    onBgmVolumeChange,
-    onSfxVolumeChange,
+    soundEnabled,
+    onToggleSound,
     isPaused,
     onResume,
     onClose
 }) {
-    const currentLang = getLanguage();
+    const [currentLang, setCurrentLang] = useState(getLanguage());
     const languages = getAvailableLanguages();
 
+    // 언어 변경 리스너
+    useEffect(() => {
+        return onLanguageChange((lang) => setCurrentLang(lang));
+    }, []);
+
     const handleLanguageChange = (lang) => {
+        // 즉시 언어 변경 적용
         setLanguage(lang);
-        // 페이지 새로고침하여 변경 적용
-        window.location.reload();
     };
 
     return (
         <div
             className={styles.overlay}
-            onClick={onClose}
+            onClick={(e) => { e.target === e.currentTarget && onClose(); }}
             onTouchEnd={(e) => { e.target === e.currentTarget && onClose(); }}
         >
             <div
                 className={styles.modal}
                 onClick={(e) => e.stopPropagation()}
-                onTouchEnd={(e) => e.stopPropagation()}
             >
                 <div className={styles.header}>
-                    <h2 className={styles.title}>⚙️ {t('settings')}</h2>
+                    <h2 className={styles.title}>{t('settings')}</h2>
                     <button
                         className={styles.closeBtn}
                         onClick={onClose}
@@ -43,46 +44,24 @@ export function Settings({
                 </div>
 
                 <div className={styles.content}>
-                    {/* BGM 볼륨 */}
+                    {/* 소리 토글 */}
                     <div className={styles.setting}>
                         <label className={styles.label}>
-                            🎵 {t('bgmVolume')}
+                            {t('sound')}
                         </label>
-                        <div className={styles.sliderContainer}>
-                            <input
-                                type="range"
-                                min="0"
-                                max="100"
-                                value={Math.round(bgmVolume * 100)}
-                                onChange={(e) => onBgmVolumeChange(Number(e.target.value) / 100)}
-                                className={styles.slider}
-                            />
-                            <span className={styles.value}>{Math.round(bgmVolume * 100)}%</span>
-                        </div>
-                    </div>
-
-                    {/* SFX 볼륨 */}
-                    <div className={styles.setting}>
-                        <label className={styles.label}>
-                            🔊 {t('sfxVolume')}
-                        </label>
-                        <div className={styles.sliderContainer}>
-                            <input
-                                type="range"
-                                min="0"
-                                max="100"
-                                value={Math.round(sfxVolume * 100)}
-                                onChange={(e) => onSfxVolumeChange(Number(e.target.value) / 100)}
-                                className={styles.slider}
-                            />
-                            <span className={styles.value}>{Math.round(sfxVolume * 100)}%</span>
-                        </div>
+                        <button
+                            className={`${styles.toggleBtn} ${soundEnabled ? styles.toggleOn : styles.toggleOff}`}
+                            onClick={onToggleSound}
+                            onTouchEnd={(e) => { e.preventDefault(); onToggleSound(); }}
+                        >
+                            {soundEnabled ? 'ON' : 'OFF'}
+                        </button>
                     </div>
 
                     {/* 언어 선택 */}
                     <div className={styles.setting}>
                         <label className={styles.label}>
-                            🌐 {t('language')}
+                            {t('language')}
                         </label>
                         <div className={styles.langButtons}>
                             {languages.map(lang => (
@@ -106,7 +85,7 @@ export function Settings({
                         onClick={onResume}
                         onTouchEnd={(e) => { e.preventDefault(); onResume(); }}
                     >
-                        ▶️ {t('resume')}
+                        {t('resume')}
                     </button>
                 )}
             </div>

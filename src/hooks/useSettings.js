@@ -3,17 +3,28 @@ import { useState, useCallback, useEffect } from 'react';
 const SETTINGS_KEY = 'meteor-commando-settings';
 
 const defaultSettings = {
-    bgmVolume: 0.01,   // BGM 볼륨 (0-1)
-    sfxVolume: 1.0,    // 효과음 볼륨 (0-1)
-    language: 'ko',    // 언어
+    soundEnabled: true,  // 소리 활성화 여부
+    language: 'ko',      // 언어
 };
 
-// 설정 로드
+// 설정 로드 (마이그레이션 포함)
 const loadSettings = () => {
     try {
         const saved = localStorage.getItem(SETTINGS_KEY);
         if (saved) {
-            return { ...defaultSettings, ...JSON.parse(saved) };
+            const parsed = JSON.parse(saved);
+
+            // 이전 버전 마이그레이션 (bgmVolume/sfxVolume -> bgmEnabled/sfxEnabled)
+            if ('bgmVolume' in parsed && !('bgmEnabled' in parsed)) {
+                parsed.bgmEnabled = parsed.bgmVolume > 0;
+                delete parsed.bgmVolume;
+            }
+            if ('sfxVolume' in parsed && !('sfxEnabled' in parsed)) {
+                parsed.sfxEnabled = parsed.sfxVolume > 0;
+                delete parsed.sfxVolume;
+            }
+
+            return { ...defaultSettings, ...parsed };
         }
     } catch (e) {
         console.warn('Failed to load settings:', e);
@@ -36,14 +47,9 @@ export function useSettings() {
         saveSettings(settings);
     }, [settings]);
 
-    // BGM 볼륨 설정
-    const setBgmVolume = useCallback((volume) => {
-        setSettings(prev => ({ ...prev, bgmVolume: Math.max(0, Math.min(1, volume)) }));
-    }, []);
-
-    // SFX 볼륨 설정
-    const setSfxVolume = useCallback((volume) => {
-        setSettings(prev => ({ ...prev, sfxVolume: Math.max(0, Math.min(1, volume)) }));
+    // 소리 토글
+    const toggleSound = useCallback(() => {
+        setSettings(prev => ({ ...prev, soundEnabled: !prev.soundEnabled }));
     }, []);
 
     // 언어 설정
@@ -62,9 +68,11 @@ export function useSettings() {
     }, []);
 
     // 설정 패널 열기/닫기
-    const openSettings = useCallback(() => {
+    const openSettings = useCallback((isPlaying = false) => {
         setIsSettingsOpen(true);
-        setIsPaused(true); // 설정 열면 자동 일시정지
+        if (isPlaying) {
+            setIsPaused(true); // 게임 중일 때만 자동 일시정지
+        }
     }, []);
 
     const closeSettings = useCallback(() => {
@@ -74,8 +82,7 @@ export function useSettings() {
 
     return {
         // 설정 값
-        bgmVolume: settings.bgmVolume,
-        sfxVolume: settings.sfxVolume,
+        soundEnabled: settings.soundEnabled,
         language: settings.language,
 
         // 일시정지 상태
@@ -85,8 +92,7 @@ export function useSettings() {
         isSettingsOpen,
 
         // 설정 함수
-        setBgmVolume,
-        setSfxVolume,
+        toggleSound,
         setLanguage,
 
         // 일시정지 제어

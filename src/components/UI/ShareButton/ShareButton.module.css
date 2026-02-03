@@ -1,72 +1,29 @@
 .container {
+    flex: 1;
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
 }
 
 .shareBtn {
-    padding: 0.625rem 1.25rem;
-    background: linear-gradient(180deg, #6366f1, #4f46e5);
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 500;
+    flex: 1;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 9999px;
     cursor: pointer;
     transition: all 0.2s;
+    backdrop-filter: blur(4px);
+    color: #a855f7;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #a855f7;
 }
 
 .shareBtn:hover {
-    background: linear-gradient(180deg, #818cf8, #6366f1);
-    transform: translateY(-1px);
+    background: rgba(168, 85, 247, 0.2);
+    color: #c084fc;
+    border-color: #c084fc;
+    transform: scale(1.05);
 }
 
 .shareBtn:active {
-    transform: translateY(0);
-}
-
-.socialButtons {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.socialBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: 50%;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.twitter {
-    background: #000;
-    color: white;
-}
-
-.twitter:hover {
-    background: #333;
-    transform: scale(1.1);
-}
-
-/* 모바일 */
-@media (max-width: 480px) {
-    .container {
-        gap: 0.5rem;
-    }
-
-    .shareBtn {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
-    }
-
-    .socialBtn {
-        width: 32px;
-        height: 32px;
-    }
+    transform: scale(0.98);
 }

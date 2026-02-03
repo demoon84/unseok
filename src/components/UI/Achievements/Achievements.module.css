@@ -7,7 +7,7 @@
     justify-content: center;
     z-index: 1001;
     padding: 1rem;
-    -webkit-overflow-scrolling: touch;
+    pointer-events: auto;
 }
 
 .modal {
@@ -21,6 +21,7 @@
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 40px rgba(168, 85, 247, 0.3);
+    overflow: hidden;
 }
 
 .header {
@@ -59,6 +60,8 @@
 }
 
 .list {
+    flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -66,6 +69,7 @@
     padding-right: 0.5rem;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
+    overscroll-behavior: contain;
 }
 
 .item {

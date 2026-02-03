@@ -1,11 +1,23 @@
 .container {
     position: fixed;
     inset: 0;
-    background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
+    background: linear-gradient(to bottom, #020617, #0f172a, #1e1b4b);
+    background-size: 100% 200%;
+    animation: skyScroll 12s linear infinite;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 10000;
+}
+
+@keyframes skyScroll {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 0% 100%;
+    }
 }
 
 .content {
@@ -14,12 +26,16 @@
     align-items: center;
     gap: 2rem;
     padding: 2rem;
+    margin-bottom: 15vh;
 }
 
 .logo {
     width: 200px;
     height: auto;
     animation: pulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 25px rgba(34, 211, 238, 0.5));
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at center, black 40%, transparent 75%);
+    mask-image: radial-gradient(ellipse 70% 70% at center, black 40%, transparent 75%);
 }
 
 @keyframes pulse {
@@ -46,10 +62,10 @@
 
 .progressBar {
     height: 100%;
-    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    background: linear-gradient(90deg, #06b6d4, #22d3ee);
     border-radius: 4px;
     transition: width 0.2s ease-out;
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
 }
 
 .status {
@@ -66,5 +82,49 @@
 
     .progressContainer {
         width: 200px;
+    }
+
+    .startButton {
+        font-size: 1.1rem;
+        padding: 0.875rem 2rem;
+    }
+}
+
+/* 임무시작 버튼 */
+.startButton {
+    padding: 1rem 2.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(180deg, #06b6d4, #0891b2);
+    border: 2px solid rgba(34, 211, 238, 0.5);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+    animation: buttonPulse 2s ease-in-out infinite;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.startButton:hover {
+    background: linear-gradient(180deg, #22d3ee, #06b6d4);
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(34, 211, 238, 0.6);
+}
+
+.startButton:active {
+    transform: scale(0.98);
+}
+
+@keyframes buttonPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 35px rgba(34, 211, 238, 0.7);
     }
 }

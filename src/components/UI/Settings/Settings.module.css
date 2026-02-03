@@ -9,6 +9,7 @@
     padding: 1rem;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
+    pointer-events: auto;
 }
 
 .modal {
@@ -69,13 +70,45 @@
 
 .setting {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
 }
 
 .label {
     color: #cbd5e1;
     font-size: 0.9rem;
+}
+
+/* 토글 버튼 */
+.toggleBtn {
+    min-width: 70px;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid;
+    -webkit-tap-highlight-color: transparent;
+    text-align: center;
+}
+
+.toggleOn {
+    background: #22c55e;
+    border-color: #22c55e;
+    color: white;
+}
+
+.toggleOff {
+    background: transparent;
+    border-color: #64748b;
+    color: #94a3b8;
+}
+
+.toggleBtn:hover {
+    transform: scale(1.05);
 }
 
 .sliderContainer {
@@ -92,6 +125,7 @@
     background: #334155;
     border-radius: 4px;
     cursor: pointer;
+    touch-action: none;
 }
 
 .slider::-webkit-slider-thumb {
@@ -133,6 +167,7 @@
 
 .langBtn {
     flex: 1;
+    min-width: 80px;
     padding: 0.5rem 1rem;
     background: #334155;
     border: 1px solid #475569;
@@ -141,6 +176,7 @@
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
+    text-align: center;
 }
 
 .langBtn:hover {

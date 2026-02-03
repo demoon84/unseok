@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { t } from '../../../utils/i18n';
 import { loadUnlockedLevels } from '../../../hooks/useAchievements';
 import styles from './LevelSelect.module.css';
@@ -31,25 +31,38 @@ const LEVELS = [
 export function LevelSelect({ onSelect, onBack }) {
     const unlockedLevels = loadUnlockedLevels();
     const lang = localStorage.getItem('meteor-commando-lang') || 'ko';
+    // 기본적으로 첫 번째 해금된 레벨 선택
+    const [selectedLevel, setSelectedLevel] = useState(unlockedLevels[0] || 1);
+
+    const handleSelect = (levelId) => {
+        setSelectedLevel(levelId);
+    };
+
+    const handleStart = () => {
+        if (selectedLevel) {
+            onSelect(selectedLevel);
+        }
+    };
 
     return (
         <div className={styles.container}>
             <div className={styles.modal}>
-                <h2 className={styles.title}>🚀 {t('selectLevel')}</h2>
+                <h2 className={styles.title}>{t('selectLevel')}</h2>
 
                 <div className={styles.levels}>
                     {LEVELS.map(level => {
                         const isUnlocked = unlockedLevels.includes(level.id);
+                        const isSelected = selectedLevel === level.id;
 
                         return (
                             <button
                                 key={level.id}
-                                className={`${styles.levelCard} ${isUnlocked ? '' : styles.locked}`}
+                                className={`${styles.levelCard} ${isUnlocked ? '' : styles.locked} ${isSelected ? styles.selected : ''}`}
                                 style={{ '--level-color': level.color }}
-                                onClick={() => isUnlocked && onSelect(level.id)}
+                                onClick={() => isUnlocked && handleSelect(level.id)}
                                 onTouchEnd={(e) => {
                                     e.preventDefault();
-                                    if (isUnlocked) onSelect(level.id);
+                                    if (isUnlocked) handleSelect(level.id);
                                 }}
                                 disabled={!isUnlocked}
                             >
@@ -77,13 +90,24 @@ export function LevelSelect({ onSelect, onBack }) {
                     })}
                 </div>
 
-                <button
-                    className={styles.backBtn}
-                    onClick={onBack}
-                    onTouchEnd={(e) => { e.preventDefault(); onBack(); }}
-                >
-                    ← {t('mainMenu')}
-                </button>
+                <div className={styles.buttonRow}>
+                    <button
+                        className={styles.backBtn}
+                        onClick={onBack}
+                        onTouchEnd={(e) => { e.preventDefault(); onBack(); }}
+                    >
+                        ← {t('mainMenu')}
+                    </button>
+
+                    <button
+                        className={`${styles.startBtn} ${selectedLevel ? '' : styles.disabled}`}
+                        onClick={handleStart}
+                        onTouchEnd={(e) => { e.preventDefault(); handleStart(); }}
+                        disabled={!selectedLevel}
+                    >
+                        {lang === 'ko' ? '시작' : 'Start'} →
+                    </button>
+                </div>
             </div>
         </div>
     );

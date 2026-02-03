@@ -8,12 +8,8 @@ const TUTORIAL_KEY = 'meteor-commando-tutorial-seen';
 const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 export function Tutorial({ onClose }) {
-    const [dontShowAgain, setDontShowAgain] = useState(false);
-
     const handleClose = () => {
-        if (dontShowAgain) {
-            localStorage.setItem(TUTORIAL_KEY, 'true');
-        }
+        localStorage.setItem(TUTORIAL_KEY, 'true');
         onClose();
     };
 
@@ -26,7 +22,6 @@ export function Tutorial({ onClose }) {
                     {/* PC 조작 */}
                     {!isMobile && (
                         <div className={styles.section}>
-                            <h3 className={styles.sectionTitle}>🖥️ {t('pcControls')}</h3>
                             <div className={styles.control}>
                                 <div className={styles.keys}>
                                     <span className={styles.key}>W</span>
@@ -48,7 +43,6 @@ export function Tutorial({ onClose }) {
                     {/* 모바일 조작 */}
                     {isMobile && (
                         <div className={styles.section}>
-                            <h3 className={styles.sectionTitle}>📱 {t('mobileControls')}</h3>
                             <div className={styles.control}>
                                 <span className={styles.icon}>👆</span>
                                 <span className={styles.description}>{t('touchMove')}</span>
@@ -62,15 +56,6 @@ export function Tutorial({ onClose }) {
                 </div>
 
                 <div className={styles.footer}>
-                    <label className={styles.checkbox}>
-                        <input
-                            type="checkbox"
-                            checked={dontShowAgain}
-                            onChange={(e) => setDontShowAgain(e.target.checked)}
-                        />
-                        <span>{t('skipTutorial')}</span>
-                    </label>
-
                     <button
                         className={styles.closeButton}
                         onClick={handleClose}

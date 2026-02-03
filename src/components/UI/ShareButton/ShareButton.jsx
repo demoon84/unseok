@@ -49,19 +49,8 @@ export function ShareButton({ score, onShare }) {
                 onClick={handleShare}
                 onTouchEnd={(e) => { e.preventDefault(); handleShare(); }}
             >
-                📤 {t('share')}
+                {t('share')}
             </button>
-
-            <div className={styles.socialButtons}>
-                <button
-                    className={`${styles.socialBtn} ${styles.twitter}`}
-                    onClick={handleTwitterShare}
-                    onTouchEnd={(e) => { e.preventDefault(); handleTwitterShare(); }}
-                    title="Twitter/X"
-                >
-                    𝕏
-                </button>
-            </div>
         </div>
     );
 }

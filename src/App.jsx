@@ -7,7 +7,6 @@ import { HUD } from './components/UI/HUD/HUD';
 import { BossAlert } from './components/UI/BossUI/BossUI';
 import { Tutorial, shouldShowTutorial } from './components/UI/Tutorial/Tutorial';
 import { Settings } from './components/UI/Settings/Settings';
-import { LoadingScreen } from './components/UI/LoadingScreen/LoadingScreen';
 import { LevelSelect } from './components/UI/LevelSelect/LevelSelect';
 import { Achievements } from './components/UI/Achievements/Achievements';
 import { ToastContainer, showInfo } from './components/UI/Toast/Toast';
@@ -18,15 +17,18 @@ import { useEffects } from './hooks/useEffects';
 import { useSound } from './hooks/useSound';
 import { useSettings } from './hooks/useSettings';
 import { useAchievements } from './hooks/useAchievements';
-import { t, initI18n } from './utils/i18n';
+import { t, initI18n, onLanguageChange } from './utils/i18n';
 import './App.css';
 
 // 언어 초기화
 initI18n();
 
 function App() {
-    // 로딩 상태
-    const [isLoading, setIsLoading] = useState(true);
+    // 언어 변경 시 리렌더링 트리거
+    const [, forceUpdate] = useState(0);
+    useEffect(() => {
+        return onLanguageChange(() => forceUpdate(n => n + 1));
+    }, []);
 
     // 튜토리얼 상태
     const [showTutorial, setShowTutorial] = useState(false);
@@ -40,10 +42,8 @@ function App() {
 
     // 설정 훅
     const {
-        bgmVolume,
-        sfxVolume,
-        setBgmVolume,
-        setSfxVolume,
+        soundEnabled,
+        toggleSound,
         isPaused,
         setPaused,
         isSettingsOpen,
@@ -103,7 +103,7 @@ function App() {
         playBossAlert,
         playGameOver,
         playVictory,
-    } = useSound();
+    } = useSound(soundEnabled);
 
     // 업적 훅
     const {
@@ -119,21 +119,21 @@ function App() {
     // 현재 레벨 설정
     const levelConfig = getLevelConfig(selectedLevel);
 
-    // BGM 볼륨 적용
+    // BGM on/off 적용
     useEffect(() => {
         if (bgmRef.current) {
-            bgmRef.current.volume = bgmVolume;
+            bgmRef.current.volume = soundEnabled ? 0.3 : 0;
         }
-    }, [bgmVolume]);
+    }, [soundEnabled]);
 
     // BGM 제어 함수
     const startBGM = useCallback(() => {
-        if (bgmRef.current) {
-            bgmRef.current.volume = bgmVolume;
+        if (bgmRef.current && soundEnabled) {
+            bgmRef.current.volume = 0.3;
             bgmRef.current.currentTime = 0;
             bgmRef.current.play().catch(() => { });
         }
-    }, [bgmVolume]);
+    }, [soundEnabled]);
 
     const stopBGM = useCallback(() => {
         if (bgmRef.current) {
@@ -142,18 +142,14 @@ function App() {
         }
     }, []);
 
-    // 로딩 완료
-    const handleLoadingComplete = useCallback(() => {
-        setIsLoading(false);
+    // 게임 시작 버튼 클릭 시 레벨 선택으로
+    const handleStartClick = useCallback(() => {
         // 첫 방문 시 튜토리얼 표시
         if (shouldShowTutorial()) {
             setShowTutorial(true);
+        } else {
+            setShowLevelSelect(true);
         }
-    }, []);
-
-    // 게임 시작 버튼 클릭 시 레벨 선택으로
-    const handleStartClick = useCallback(() => {
-        setShowLevelSelect(true);
     }, []);
 
     // 레벨 선택 후 게임 시작
@@ -171,13 +167,11 @@ function App() {
         }
     }, [gameStart, resetBossState, startBGM]);
 
-    // 튜토리얼 닫기 후 게임 시작
+    // 튜토리얼 닫기 후 레벨 선택으로
     const handleTutorialClose = useCallback(() => {
         setShowTutorial(false);
-        gameStart();
-        resetBossState();
-        startBGM();
-    }, [gameStart, resetBossState, startBGM]);
+        setShowLevelSelect(true);
+    }, []);
 
     // 게임 시작 (보스 상태도 리셋)
     const handleStart = useCallback(() => {
@@ -229,11 +223,6 @@ function App() {
             endGame(score, elapsedTime, powerLevel, true, selectedLevel);
         }
     }, [gameState, playGameOver, playVictory, stopBGM, score, elapsedTime, powerLevel, selectedLevel, endGame]);
-
-    // 로딩 화면
-    if (isLoading) {
-        return <LoadingScreen onComplete={handleLoadingComplete} />;
-    }
 
     return (
         <div className="app">
@@ -287,6 +276,7 @@ function App() {
                     <StartScreen
                         onStart={handleStartClick}
                         onAchievements={() => setShowAchievements(true)}
+                        onSettings={openSettings}
                     />
                 )}
 
@@ -343,15 +333,6 @@ function App() {
                         totalBosses={levelConfig.TOTAL_BOSSES}
                         level={selectedLevel}
                     />
-
-                    {/* 설정 버튼 */}
-                    <button
-                        className="settings-btn"
-                        onClick={openSettings}
-                        onTouchEnd={(e) => { e.preventDefault(); openSettings(); }}
-                    >
-                        ⚙️
-                    </button>
                 </>
             )}
 
@@ -363,10 +344,8 @@ function App() {
             {/* 설정 패널 */}
             {isSettingsOpen && (
                 <Settings
-                    bgmVolume={bgmVolume}
-                    sfxVolume={sfxVolume}
-                    onBgmVolumeChange={setBgmVolume}
-                    onSfxVolumeChange={setSfxVolume}
+                    soundEnabled={soundEnabled}
+                    onToggleSound={toggleSound}
                     isPaused={isPaused && gameState === 'playing'}
                     onResume={handleResume}
                     onClose={closeSettings}

@@ -23,8 +23,7 @@ const translations = {
         skipTutorial: '다시 보지 않기',
 
         // 설정
-        bgmVolume: 'BGM 볼륨',
-        sfxVolume: '효과음 볼륨',
+        sound: '소리',
         language: '언어',
         pause: '일시정지',
         resume: '계속하기',
@@ -63,7 +62,7 @@ const translations = {
 
         // 로딩
         loading: '로딩 중...',
-        loadingAssets: '에셋 로딩 중',
+        loadingAssets: '로딩중',
 
         // 에러
         networkError: '네트워크 오류가 발생했습니다',
@@ -96,8 +95,7 @@ const translations = {
         skipTutorial: "Don't show again",
 
         // Settings
-        bgmVolume: 'BGM Volume',
-        sfxVolume: 'SFX Volume',
+        sound: 'Sound',
         language: 'Language',
         pause: 'Pause',
         resume: 'Resume',
@@ -136,7 +134,7 @@ const translations = {
 
         // Loading
         loading: 'Loading...',
-        loadingAssets: 'Loading assets',
+        loadingAssets: 'Loading',
 
         // Error
         networkError: 'Network error occurred',
@@ -151,6 +149,7 @@ const translations = {
 
 // 현재 언어 (localStorage에서 로드)
 let currentLanguage = 'ko';
+let languageChangeListeners = [];
 
 // 초기화
 export const initI18n = () => {
@@ -165,10 +164,21 @@ export const getLanguage = () => currentLanguage;
 
 // 언어 설정
 export const setLanguage = (lang) => {
-    if (translations[lang]) {
+    if (translations[lang] && currentLanguage !== lang) {
         currentLanguage = lang;
         localStorage.setItem('meteor-commando-lang', lang);
+        // 모든 리스너에게 알림
+        languageChangeListeners.forEach(listener => listener(lang));
     }
+};
+
+// 언어 변경 리스너 등록
+export const onLanguageChange = (callback) => {
+    languageChangeListeners.push(callback);
+    // 등록 해제 함수 반환
+    return () => {
+        languageChangeListeners = languageChangeListeners.filter(l => l !== callback);
+    };
 };
 
 // 번역 함수
@@ -189,3 +199,4 @@ export const getAvailableLanguages = () => [
 
 // 초기화 실행
 initI18n();
+
