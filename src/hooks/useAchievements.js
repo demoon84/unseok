@@ -154,17 +154,19 @@ export const unlockLevel = (level) => {
 export function useAchievements() {
     const [data, setData] = useState(loadStats);
     const [currentStreak, setCurrentStreak] = useState(0);
+    const [pendingAchievements, setPendingAchievements] = useState([]);
 
-    // 업적 체크 및 알림
+    // 업적 체크 (알림 없이 저장만)
     const checkAchievements = useCallback((stats, currentUnlocked) => {
         const newUnlocked = [];
         const lang = localStorage.getItem('meteor-commando-lang') || 'ko';
 
         ACHIEVEMENT_DEFINITIONS.forEach(achievement => {
             if (!currentUnlocked.includes(achievement.id) && achievement.condition(stats)) {
-                newUnlocked.push(achievement.id);
-                // 토스트 알림
-                showAchievement(`${achievement.icon} ${achievement.name[lang]}`);
+                newUnlocked.push({
+                    id: achievement.id,
+                    message: `${achievement.icon} ${achievement.name[lang]}`
+                });
             }
         });
 
@@ -189,9 +191,15 @@ export function useAchievements() {
                 }
             });
 
-            // 업적 체크
+            // 업적 체크 (알림은 나중에)
             const newUnlocked = checkAchievements(newStats, prev.unlocked);
-            const allUnlocked = [...prev.unlocked, ...newUnlocked];
+            const unlockedIds = newUnlocked.map(a => a.id);
+            const allUnlocked = [...prev.unlocked, ...unlockedIds];
+
+            // 새 업적이 있으면 대기열에 추가
+            if (newUnlocked.length > 0) {
+                setPendingAchievements(pending => [...pending, ...newUnlocked]);
+            }
 
             // 저장
             saveData(newStats, allUnlocked);
@@ -218,6 +226,17 @@ export function useAchievements() {
         setCurrentStreak(0);
     }, []);
 
+    // 대기 중인 업적 알림 표시
+    const showPendingAchievements = useCallback(() => {
+        pendingAchievements.forEach((achievement, index) => {
+            // 순차적으로 표시 (0.5초 간격)
+            setTimeout(() => {
+                showAchievement(achievement.message);
+            }, index * 500);
+        });
+        setPendingAchievements([]);
+    }, [pendingAchievements]);
+
     // 게임 종료 시
     const endGame = useCallback((score, survivalTime, powerLevel, cleared = false, level = 1) => {
         let levelsCleared = 0;
@@ -237,7 +256,12 @@ export function useAchievements() {
         });
 
         resetStreak();
-    }, [updateStats, resetStreak]);
+
+        // 게임 종료 후 대기 중인 업적 알림 표시 (1초 후)
+        setTimeout(() => {
+            showPendingAchievements();
+        }, 1000);
+    }, [updateStats, resetStreak, showPendingAchievements]);
 
     // 업적 목록 가져오기
     const getAchievements = useCallback(() => {
@@ -257,6 +281,8 @@ export function useAchievements() {
         resetStreak,
         endGame,
         getAchievements,
-        updateStats
+        updateStats,
+        showPendingAchievements,
+        pendingCount: pendingAchievements.length
     };
 }

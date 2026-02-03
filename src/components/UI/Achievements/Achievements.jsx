@@ -7,8 +7,16 @@ export function Achievements({ achievements, onClose }) {
     const totalCount = achievements.length;
 
     return (
-        <div className={styles.overlay}>
-            <div className={styles.modal}>
+        <div
+            className={styles.overlay}
+            onClick={onClose}
+            onTouchEnd={(e) => { e.target === e.currentTarget && onClose(); }}
+        >
+            <div
+                className={styles.modal}
+                onClick={(e) => e.stopPropagation()}
+                onTouchEnd={(e) => e.stopPropagation()}
+            >
                 <div className={styles.header}>
                     <h2 className={styles.title}>🏆 {t('achievements')}</h2>
                     <span className={styles.count}>{unlockedCount}/{totalCount}</span>

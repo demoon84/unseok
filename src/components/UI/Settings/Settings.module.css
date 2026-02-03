@@ -7,6 +7,8 @@
     justify-content: center;
     z-index: 1001;
     padding: 1rem;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
 }
 
 .modal {
