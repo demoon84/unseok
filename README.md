@@ -219,9 +219,3 @@ npm run build
 MIT License - 자유롭게 수정 및 배포 가능합니다.
 
 ---
-
-<div align="center">
-
-**Made with ❤️ using Vibe Coding**
-
-</div>
